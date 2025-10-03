@@ -16,6 +16,4 @@ package-dir = {"": "src"}
 
 [tool.setuptools.packages.find]
 where = ["src"]
-
-[tool.setuptools.include]
-patterns = ["tests/**", "src/**"]
+exclude = ["experimental", "tests"]
