@@ -18,7 +18,7 @@ __________
 
 ## File Structure
 
-- **src/pysfo/pulldata**: Modules for pulling and processing data from various data sources:
+- **pysfo/pulldata**: Modules for pulling and processing data from various data sources:
   - `cmns.py`: Common utilities for data manipulation.
   - `efa_row.py`: Tools for row-level economic and financial analysis.
   - `exchangerates.py`: Functions to handle and retrieve exchange rate data.
@@ -28,14 +28,14 @@ __________
   - `fred.py`: Functions to pull cleaned series from FRED, after downloading them through the FRED API.
   - `imf_ifs.py`: Access and analyze data from the International Monetary Fund's International Financial Statistics.
   - `other.py`: Miscellaneous utilities related to data retrieval and manipulation.
-- **src/pysfo/dbnomicstools**: Tools specific to DBnomics, designed for handling economic datasets efficiently.
-- **src/pysfo/llmtools**: Natural Language Processing tools assisting in code generation and configuration.
-- **src/pysfo/basic**: Contains essential utility functions for data manipulation including:
+- **pysfo/dbnomicstools**: Tools specific to DBnomics, designed for handling economic datasets efficiently.
+- **pysfo/llmtools**: Natural Language Processing tools assisting in code generation and configuration.
+- **pysfo/basic**: Contains essential utility functions for data manipulation including:
   - `basicfns.py`: Basic functions for handling data operations.
   - `groupby_apply_various.py`: Utilities for group-by operations and applying functions.
   - `regfns.py`: Functions for regression analysis.
   - `time_utils.py`: Tools for handling and manipulating time-related data.
-- **src/pysfo/batch_jobs**: Contains scripts for automating batch data processing tasks. It manages repetitive data jobs to improve efficiency and accuracy.
+- **pysfo/batch_jobs**: Contains scripts for automating batch data processing tasks. It manages repetitive data jobs to improve efficiency and accuracy.
 - **tests**: Comprehensive unit tests for core functionalities ensuring robustness and reliability of the package.
 
 ## Installation
