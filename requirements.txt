@@ -1,0 +1,10 @@
+pandas
+numpy
+matplotlib
+plotly
+openai
+fredapi
+country_converter
+joblib
+dotenv
+dbnomics
