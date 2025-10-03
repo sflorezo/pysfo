@@ -6,3 +6,11 @@ __________
 ## Notes
 
 1. Only tests for pulldata are currently implemented.
+
+## Installation
+
+Direct install from GitHub:
+
+```bash
+pip install git+https://github.com/sflorezo/pysfo.git
+```
