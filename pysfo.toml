@@ -4,7 +4,6 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pysfo"
-version = "0.1.0"
 description = "A Python package for data analysis and API interactions."
 authors = [{ name = "Sergio A. Florez-Orrego", email = "saf9215@stern.nyu.edu" }]
 license = {text = "MIT"}
@@ -17,3 +16,6 @@ package-dir = {"": "src"}
 [tool.setuptools.packages.find]
 where = ["src"]
 exclude = ["experimental", "tests"]
+
+[tool.setuptools.dynamic]
+version = {attr = "pysfo.__version__"}
