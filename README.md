@@ -16,6 +16,7 @@ __________
 - **Basic Utilities**: Essential functions for data manipulation and time utilities.
 - **NLP Tools**: Support in generating code and configurations using LLM based tools.
 
+__________
 ## File Structure
 
 - **pysfo/pulldata**: Modules for pulling and processing data from various data sources:
@@ -38,6 +39,7 @@ __________
 - **pysfo/batch_jobs**: Contains scripts for automating batch data processing tasks. It manages repetitive data jobs to improve efficiency and accuracy.
 - **tests**: Comprehensive unit tests for core functionalities ensuring robustness and reliability of the package.
 
+__________
 ## Installation
 
 Install directly from the GitHub repository:
@@ -46,6 +48,7 @@ Install directly from the GitHub repository:
 pip install git+https://github.com/sflorezo/pysfo.git
 ```
 
+__________
 ## Usage
 
 Example for importing and using the package, that imports the cleaned Enhanced Financial Accounts of the USA (after downloading main data manually):
@@ -60,6 +63,7 @@ data = efa_row.get_efa_row(efa_row_dir, level = "agg")
 # ... additional usage examples ...
 ```
 
+__________
 ## Requirements
 
 All Python dependencies are listed in `requirements.txt`. Ensure you have the necessary libraries installed:
@@ -68,6 +72,7 @@ All Python dependencies are listed in `requirements.txt`. Ensure you have the ne
 pip install -r requirements.txt
 ```
 
+__________
 ## Testing
 
 Run all tests using pytest to ensure functionality:
@@ -76,14 +81,17 @@ Run all tests using pytest to ensure functionality:
 pytest tests/
 ```
 
+__________
 ## Contribution
 
 This is currently a personal project, and external contributions are not being accepted at this time. Thank you for your interest!
 
+__________
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
+__________
 ## Contact
 
 For questions or issues, please contact Sergio Florez-Orrego at [saf9215@stern.nyu.edu](mailto:saf9215@stern.nyu.edu).

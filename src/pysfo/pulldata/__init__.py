@@ -1,22 +1,23 @@
 from ..config import *
+from .config import *
 from . import cmns 
-from . import efa_row
-from . import exchangerates
+from .efa_row import EFARow 
+from .frb_exchangerates import FRBExchangeRates
 from . import fetch_fred_api
-from . import fof
-from . import fomc_dates
-from . import fred
-from . import imf_ifs
+from .fof import FoF
+from .fomc_dates import FOMCdates
+from .fred import FREDcleaned
+from .imf_ifs import imfIFS
 from . import other 
 
 __all__ = [
     'cmns',
-    'efa_row',
-    'exchangerates',
+    'EFARow',
+    'FRBExchangeRates',
     'fetch_fred_api',
-    'fof',
-    'fomc_dates',
-    'fred',
-    'imf_ifs',
+    'FoF',
+    'FOMCdates',
+    'FREDcleaned',
+    'imfIFS',
     'other'
 ]
