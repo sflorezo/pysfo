@@ -149,65 +149,95 @@ def create_datadict_dataframe(datadict_dict):
 
 #%%========== get data ==========%%#
 
-def get_exchangerates(FRB_H10_dir, check_ER = False):
 
-    import os
-    import pandas as pd
+class FRBExchangeRates:
 
-    print("Exchange rates extracted from FRB H10 table.")
+    @staticmethod
+    def about():
 
-    # Define file paths
-    file_path = f'{FRB_H10_dir}/FRB_H10/H10_data.xml'
-    datadict_path = f'{FRB_H10_dir}/FRB_H10/frb_common.xsd'
+        return (
+            "Daily Foreign Exchange Rates, USD vs. Important Currencies, retrieved from the FRB H.10 Tables."
+        )
 
-    # Check if files exist
-    for path in [file_path, datadict_path]:
-        if not os.path.exists(path):
-            raise FileNotFoundError(f"The required file '{path}' is missing.")
+    @staticmethod
+    def print_instructions():
+        
+        from .config import get_data_path
+
+        FRB_H10_dir = get_data_path() / "FRB_H10/FRB_H10"
+
+        return (
+            f"To use this dataset, download the H.10 Daily rates zip pacakge from the FRB/Federal Reserve Webpage and unzip the retrieved file. The final target directory should have the followig files:\n\n"
+            'frb_common.xsd\n' 
+            'H10_data.xml\n' 
+            'H10_H10.xsd\n'
+            'H10_struct.xml\n\n'
+            f"which should be stored in the following directory {FRB_H10_dir}\n"
+        )
     
-    # Get data
-    datasets = parse_er_xml(file_path)
-    df = create_er_dataframe(datasets)
+    @staticmethod
+    def get(check_ER = False):
 
-    datadict = parse_datadict_xml(datadict_path)
-    datadict = create_datadict_dataframe(datadict)
+        import os
+        import pandas as pd
+        from .config import get_data_path
 
-    # fix general formats
+        print("Exchange rates extracted from FRB H10 table.\n")
 
-    df[["frequency", "obs_value"]] = df[["frequency", "obs_value"]].apply(lambda x : pd.to_numeric(x))
-    df["time_period"] = pd.to_datetime(df["time_period"]) 
+        FRB_H10_dir = get_data_path() / "FRB_H10/FRB_H10"
 
-    # keep business day ER and normal
+        # Define file paths
+        file_path = f'{FRB_H10_dir}/H10_data.xml'
+        datadict_path = f'{FRB_H10_dir}/frb_common.xsd'
 
-    df = df[df["frequency"] == 9]
-    df = df[df["obs_status"] == "A"]
+        # Check if files exist
+        for path in [file_path, datadict_path]:
+            if not os.path.exists(path):
+                raise FileNotFoundError(f"The required file '{path}' is missing.")
+        
+        # Get data
+        datasets = parse_er_xml(file_path)
+        df = create_er_dataframe(datasets)
 
-    # fix ER names (everything looks kind of nice)
+        datadict = parse_datadict_xml(datadict_path)
+        datadict = create_datadict_dataframe(datadict)
 
-    # Note: This is for checks
-    # statatab(df["series_name"])
-    
-    h_tmp = (
-        df
-        .groupby(["long_description", "series_name", "frequency", "unit", "obs_status"])
-        .agg(max_date = ("time_period", "max"),
-            min_date = ("time_period", "min"),
-            nobs = ("obs_value", "count"))
-        .reset_index()
-        .drop_duplicates()
-        .sort_values(by = "long_description")
-    )
+        # fix general formats
 
-    if check_ER:
-        h_tmp.to_csv(f"{FRB_H10_dir}/check.csv")
+        df[["frequency", "obs_value"]] = df[["frequency", "obs_value"]].apply(lambda x : pd.to_numeric(x))
+        df["time_period"] = pd.to_datetime(df["time_period"]) 
 
-    # take out series no longer updated
+        # keep business day ER and normal
 
-    mask = df["series_name"].isin(["V0.JRXWTFB_N.B", "V0.JRXWTFN_N.B", "V0.JRXWTFO_N.B"])
-    df = df.loc[~mask, :]
+        df = df[df["frequency"] == 9]
+        df = df[df["obs_status"] == "A"]
 
-    # save fx data
+        # fix ER names (everything looks kind of nice)
 
-    return df
+        # Note: This is for checks
+        # statatab(df["series_name"])
+        
+        h_tmp = (
+            df
+            .groupby(["long_description", "series_name", "frequency", "unit", "obs_status"])
+            .agg(max_date = ("time_period", "max"),
+                min_date = ("time_period", "min"),
+                nobs = ("obs_value", "count"))
+            .reset_index()
+            .drop_duplicates()
+            .sort_values(by = "long_description")
+        )
+
+        if check_ER:
+            h_tmp.to_csv(f"{FRB_H10_dir}/check.csv")
+
+        # take out series no longer updated
+
+        mask = df["series_name"].isin(["V0.JRXWTFB_N.B", "V0.JRXWTFN_N.B", "V0.JRXWTFO_N.B"])
+        df = df.loc[~mask, :]
+
+        # save fx data
+
+        return df
 
 # %%

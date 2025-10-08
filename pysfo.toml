@@ -19,3 +19,6 @@ exclude = ["experimental", "tests"]
 
 [tool.setuptools.dynamic]
 version = {attr = "pysfo.__version__"}
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]

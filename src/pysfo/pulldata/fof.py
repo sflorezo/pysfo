@@ -56,120 +56,148 @@ def fof_upload_dict():
 
     return upload_dict
 
-# download all series
+#%%========== data retriever ==========%%#
 
-def get_fof_series(fred_flowoffunds_dir, series = None, frequency = "Q"):
-
-    import pandas as pd
-    import numpy as np
-    import os
-    from ..basic import dupli_report
+class FoF:
+    @staticmethod
     
-    if series is None:
-        raise ValueError("You must provide a list of series.")
-    
-    series = series if isinstance(series, list) else [series]
-    df_merge = []
-    upload_dict = fof_upload_dict()
+    def about():
 
-    if True not in [s_ in upload_dict.keys() for s_ in series]:
-        out_str = ""
-        for key in upload_dict.keys():
-            out_str += f"{key}\n"
-        raise ValueError(f"No provided series in upload_dict. Currently available series are:\n{out_str}")
-
-    for s in [s for s in series if s not in upload_dict.keys()]:
-        print(f"-> Series '{s}' not found in master download dict. Continuing without this series.")
-
-    upload_dict = {key : val for key, val in upload_dict.items() if key in series}
-
-    freq_order = ["D", "W", "M", "Q", "Y"]
-    freq_rank = {f : i for i, f in enumerate(freq_order)}
-
-    freqs = {val["frequency"] for val in upload_dict.values()}
-    lowest_possible_frequency = freq_order[max([freq_rank[freq] for freq in freqs])]
-
-    if freq_rank[frequency] < freq_rank[lowest_possible_frequency]:
-        raise ValueError(
-            f"Required frequency '{frequency}' is lower resolution than lowest_possible_frequency '{lowest_possible_frequency}'."
+        return (
+            "Flow of Funds Data. Financial Accounts of the United States."
         )
 
-    print(f"\n -> Clean series at frequency = {frequency}:")
+    @staticmethod
+    def print_instructions():
 
-    datatables = set([vals["table"] for vals in upload_dict.values()])
+        from .config import get_data_path
 
-    for table in datatables:
+        fof_dir = get_data_path() / "fred_flowoffunds"
+
+        return (
+            f"To use this dataset, download the full Z.1 release (this is, the consolidated compresed data that include all tables in independent csv files). Unzi the downloaded files, and store them in the directory \n\n"
+            f"{fof_dir}\n\n"
+            "This directory, should subsequently include independent directories for (1) the csv files of each table, and (2) the csv files of the data dictionary for each table. Thus, fred_flowoffunds should have the following structure:\n\n"
+            "(fred_flowoffunds/csv): csv files of each table\n"
+            "(fred_flowoffunds/data_dictionary): the data dictionary of each table\n"
+        )
+    
+    @staticmethod
+    def get(series = None, frequency = "Q"):
+
+        import pandas as pd
+        import numpy as np
+        import os
+        from ..basic import dupli_report
+        from .config import get_data_path
+
+        fred_flowoffunds_dir = get_data_path() / "fred_flowoffunds"
         
-        # check if necessary files exist
-
-        csv_path = f"{fred_flowoffunds_dir}/csv/{table}.csv"
-        datadict_path = f"{fred_flowoffunds_dir}/data_dictionary/{table}.txt"
-
-        for path in [csv_path, datadict_path]:
-            if not os.path.exists(path):
-                raise FileNotFoundError(f"The required file '{path}' is missing.")
-
-        # get series
-
-        get_series = {key : vals for key, vals in upload_dict.items() if vals["table"] == table}
-
-        data = pd.read_csv(f"{fred_flowoffunds_dir}/csv/{table}.csv")
-
-        get_cols = data.columns[data.columns.str.replace(r".Q$", "", regex = True).isin(get_series.keys())]
-        data = data[["date"] + list(get_cols)]
-
-        # process datadict
+        if series is None:
+            raise ValueError("You must provide a list of series.")
         
-        datadict = pd.read_table(f"{fred_flowoffunds_dir}/data_dictionary/{table}.txt", header = None)
-        datadict.columns = ["variable", "description", "line", "table", "unitnotes"]
-        datadict = datadict[["variable", "description", "unitnotes"]]
-        datadict = datadict[datadict["variable"].isin(get_cols)].drop_duplicates()
+        series = series if isinstance(series, list) else [series]
+        df_merge = []
+        upload_dict = fof_upload_dict()
 
-        datadict["unit_factor"] = np.nan
-        for factor, desc in zip([1e6, 1e9, 1e12], ["millions", "billions", "trillions"]):
-            mask = datadict["unitnotes"].str.contains(desc, case = False, na=False)
-            datadict["unit_factor"] = np.where(mask, factor, datadict["unit_factor"])
+        if True not in [s_ in upload_dict.keys() for s_ in series]:
+            out_str = ""
+            for key in upload_dict.keys():
+                out_str += f"{key}\n"
+            raise ValueError(f"No provided series in upload_dict. Currently available series are:\n{out_str}")
 
-        datadict = datadict[["variable", "description", "unit_factor"]]
+        for s in [s for s in series if s not in upload_dict.keys()]:
+            print(f"-> Series '{s}' not found in master download dict. Continuing without this series.")
 
-        # process main data
+        upload_dict = {key : val for key, val in upload_dict.items() if key in series}
 
-        data["date"] = pd.PeriodIndex(data["date"].str.replace(":", ""), freq = "Q").to_timestamp(how = "end").normalize()
+        freq_order = ["D", "W", "M", "Q", "Y"]
+        freq_rank = {f : i for i, f in enumerate(freq_order)}
 
-        data = data.melt(id_vars = "date")
-        data = pd.merge(data, datadict, on = "variable", how = "left", validate = "m:1")
+        freqs = {val["frequency"] for val in upload_dict.values()}
+        lowest_possible_frequency = freq_order[max([freq_rank[freq] for freq in freqs])]
 
-        data["value"] = pd.to_numeric(data["value"], errors = "coerce") * data["unit_factor"]
+        if freq_rank[frequency] < freq_rank[lowest_possible_frequency]:
+            raise ValueError(
+                f"Required frequency '{frequency}' is lower resolution than lowest_possible_frequency '{lowest_possible_frequency}'."
+            )
 
-        # fix frequency
+        print(f"\n -> Clean series at frequency = {frequency}:")
 
-        data = data.sort_values(by = "date", ascending = True)
-        data["date"] = data["date"].dt.to_period(frequency).dt.to_timestamp(how = "end").dt.normalize() 
-        data = data.groupby(["variable", "date"]).agg({"description" : "last", "value" : "last"}).reset_index()
+        datatables = set([vals["table"] for vals in upload_dict.values()])
 
-        if True in dupli_report(data[["date", "variable"]])["Duplicated"].values:
-            raise ValueError("Duplicated dates found")
-        
-        # rename vars
-        
-        data.rename(columns = {"variable" : "series"}, inplace = True)
-        data["variable"] = pd.Series(np.nan, index=data.index, dtype="string")
+        for table in datatables:
+            
+            # check if necessary files exist
 
-        varname_dict = {key + ".Q" : val["varname"] for key, val in get_series.items()}
-        
-        for series, varname in varname_dict.items():
-            mask = (data["series"] == series)
-            data["variable"] = np.where(mask, varname, data["variable"])
+            csv_path = f"{fred_flowoffunds_dir}/csv/{table}.csv"
+            datadict_path = f"{fred_flowoffunds_dir}/data_dictionary/{table}.txt"
 
-        data = data[["date", "series", "variable", "value", "description"]]
+            for path in [csv_path, datadict_path]:
+                if not os.path.exists(path):
+                    raise FileNotFoundError(f"The required file '{path}' is missing.")
 
-        data["quarterly"] = data["date"].dt.to_period("Q")
-        data = data[["quarterly"] + list(data.drop(columns = ["date", "quarterly"]).columns)] 
+            # get series
 
-        df_merge.append(data)
+            get_series = {key : vals for key, vals in upload_dict.items() if vals["table"] == table}
 
-    df = pd.concat(df_merge, axis = 0) 
-    del df_merge
+            data = pd.read_csv(f"{fred_flowoffunds_dir}/csv/{table}.csv")
 
-    return df
+            get_cols = data.columns[data.columns.str.replace(r".Q$", "", regex = True).isin(get_series.keys())]
+            data = data[["date"] + list(get_cols)]
+
+            # process datadict
+            
+            datadict = pd.read_table(f"{fred_flowoffunds_dir}/data_dictionary/{table}.txt", header = None)
+            datadict.columns = ["variable", "description", "line", "table", "unitnotes"]
+            datadict = datadict[["variable", "description", "unitnotes"]]
+            datadict = datadict[datadict["variable"].isin(get_cols)].drop_duplicates()
+
+            datadict["unit_factor"] = np.nan
+            for factor, desc in zip([1e6, 1e9, 1e12], ["millions", "billions", "trillions"]):
+                mask = datadict["unitnotes"].str.contains(desc, case = False, na=False)
+                datadict["unit_factor"] = np.where(mask, factor, datadict["unit_factor"])
+
+            datadict = datadict[["variable", "description", "unit_factor"]]
+
+            # process main data
+
+            data["date"] = pd.PeriodIndex(data["date"].str.replace(":", ""), freq = "Q").to_timestamp(how = "end").normalize()
+
+            data = data.melt(id_vars = "date")
+            data = pd.merge(data, datadict, on = "variable", how = "left", validate = "m:1")
+
+            data["value"] = pd.to_numeric(data["value"], errors = "coerce") * data["unit_factor"]
+
+            # fix frequency
+
+            data = data.sort_values(by = "date", ascending = True)
+            data["date"] = data["date"].dt.to_period(frequency).dt.to_timestamp(how = "end").dt.normalize() 
+            data = data.groupby(["variable", "date"]).agg({"description" : "last", "value" : "last"}).reset_index()
+
+            if True in dupli_report(data[["date", "variable"]])["Duplicated"].values:
+                raise ValueError("Duplicated dates found")
+            
+            # rename vars
+            
+            data.rename(columns = {"variable" : "series"}, inplace = True)
+            data["variable"] = pd.Series(np.nan, index=data.index, dtype="string")
+
+            varname_dict = {key + ".Q" : val["varname"] for key, val in get_series.items()}
+            
+            for series, varname in varname_dict.items():
+                mask = (data["series"] == series)
+                data["variable"] = np.where(mask, varname, data["variable"])
+
+            data = data[["date", "series", "variable", "value", "description"]]
+
+            data["quarterly"] = data["date"].dt.to_period("Q")
+            data = data[["quarterly"] + list(data.drop(columns = ["date", "quarterly"]).columns)] 
+
+            df_merge.append(data)
+
+        df = pd.concat(df_merge, axis = 0) 
+        del df_merge
+
+        return df
 # %%

@@ -1,18 +1,41 @@
 #%%
 
-def get_restated_matrices(cmns_path):
+class RestatementMatrices:
 
-    import pandas as pd
-    import os
+    @staticmethod
+    def about():
 
-    # Define the file path
-    file_path = f"{cmns_path}/Restatement_Matrices.dta"
+        return (
+            "Restatement Matrices published in 'Redrawing the Map of Capital Flows' (Coppola, Maggiori, Nieman, Schreger; 2021)."
+        )
 
-    # Check if the file exists
-    if not os.path.exists(file_path):
-        raise FileNotFoundError(f"The required file 'Restatement_Matrices.dta' is missing in '{cmns_path}'")
+    @staticmethod
+    def print_instructions():
 
-    # Read the Stata file if it exists
-    df = pd.read_stata(file_path)
+        from .config import get_data_path
+
+        file_path = get_data_path() / "cmns/Restatement_Matrices.dta"
+
+        return (
+            f"To use this dataset, download the Restatement Matrices from the GCAP webpage and store them so that the main data path is\n"
+            f"{file_path}\n"
+        )
     
-    return df
+    @staticmethod
+    def get():
+        
+        from .config import get_data_path
+        import pandas as pd
+        import os
+
+        # Define the file path
+        file_path = get_data_path() / "cmns/Restatement_Matrices.dta"
+    
+        # Check if the file exists
+        if not os.path.exists(file_path):
+            raise FileNotFoundError(f"The required path '{file_path}' does not exist. Please check the instructions for downloading the data.'")
+
+        # Read the Stata file if it exists
+        df = pd.read_stata(file_path)
+        
+        return df
