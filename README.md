@@ -25,7 +25,6 @@ __________
   - `regfns.py`: Functions for regression analysis.
   - `time_utils.py`: Tools for handling and manipulating time-related data.
 - **pysfo/batch_jobs**: Contains scripts for automating batch data processing tasks. It manages repetitive data jobs to improve efficiency and accuracy.
-- **pysfo/dbnomicstools**: Tools specific to DBnomics, designed for handling economic datasets efficiently.
 - **pysfo/llmtools**: Natural Language Processing tools assisting in code generation and configuration.
 - **pysfo/pulldata**: Modules for pulling and processing data from various data sources:
   - `cmns.py`: Common utilities for data manipulation.
@@ -51,7 +50,7 @@ pip install git+https://github.com/sflorezo/pysfo.git
 __________
 ## Usage and Configurations
 
-I encourage the user to explore the modules `basic`, `batch_jobs`, `dbnomicstools` and `llmtools`. For these modules, the purpose of the methods definined in them should be straightforward. 
+I encourage the user to explore the modules `basic`, `batch_jobs`, and `llmtools`. For these modules, the purpose of the methods definined in them should be straightforward. 
 
 Some of the packages use API Keys, that the user will need to set. For `pulldata` the user will need to set its root raw path before starting to work. I will proceed to give a short description of necessary configurations.
 

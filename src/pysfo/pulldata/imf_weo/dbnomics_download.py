@@ -1,29 +1,10 @@
 #%%========== helper functions ==========%%#
-
-def _get_filters(filter = None):
-
-    import os
-    from pysfo.pulldata.dbnomicstools.config import extract_indicators_from_json
-
-    current_dir = os.path.dirname(__file__)
-    json_path = os.path.join(current_dir, "dbnomics_datastructure.json")
-
-    metadata = extract_indicators_from_json(json_path)
-
-    if filter is None:
-        return "Please specify a filter of ['INDICATOR', 'REF_AREA', 'FREQ']"
-    elif filter == "INDICATOR":
-        return metadata.loc[metadata["ID"] == "INDICATOR", :]
-    elif filter == "REF_AREA":
-        return metadata.loc[metadata["ID"] == "REF_AREA", :]
-    elif filter == "FREQ":
-        return metadata.loc[metadata["ID"] == "FREQ", :]
-    else:
-        return "Filter not implemented yet."
-
-def _decompose_indicator_df():
     
-    indicator_df = _get_filters(filter = "INDICATOR")
+def _decompose_indicator_df():
+
+    import pysfo.dbnomicstools.imf_ifs as dbt_ifs
+    
+    indicator_df = dbt_ifs.get_filters(filter = "INDICATOR")
 
     DESC = indicator_df["DESCRIPTION_TEXT"].str.split(",", expand = True)
     DESC = DESC.apply(lambda col : col.str.strip(), axis = 1)
@@ -37,6 +18,7 @@ def _fetch_and_save_series_by_subdata(subdata, save_dir, force_fetch = False):
     import pandas as pd
     import dbnomics as db
     import os
+    import pysfo.dbnomicstools.imf_ifs as dbt_ifs
     from joblib import Parallel, delayed
     from functools import partial
     
@@ -70,8 +52,8 @@ def _fetch_and_save_series_by_subdata(subdata, save_dir, force_fetch = False):
 
     subdata_list = [subdata] if isinstance(subdata, str) else subdata
 
-    frequency_df = _get_filters(filter = "FREQ")
-    ref_area_df = _get_filters(filter = "REF_AREA")
+    frequency_df = dbt_ifs.get_filters(filter = "FREQ")
+    ref_area_df = dbt_ifs.get_filters(filter = "REF_AREA")
     indicator_df = _decompose_indicator_df()
 
     subdata_list_all = indicator_df["DESCRIPTION_TEXT_1"].unique()

@@ -4,7 +4,7 @@
 def get_filters(filter = None):
 
     import os
-    # from experimental.pulldata.dbnomicstools.config import extract_indicators_from_json
+    # from pysfo.dbnomicstools.config import extract_indicators_from_json
     from ..config import extract_indicators_from_json
 
     current_dir = os.path.dirname(__file__)
@@ -15,11 +15,11 @@ def get_filters(filter = None):
     if filter is None:
         return "Please specify a filter of ['INDICATOR', 'REF_AREA', 'FREQ']"
     elif filter == "INDICATOR":
-        return metadata.loc[metadata["ID"] == "CL_INDICATOR_IFS", :]
+        return metadata.loc[metadata["ID"] == "INDICATOR", :]
     elif filter == "REF_AREA":
-        return metadata.loc[metadata["ID"] == "CL_AREA_IFS", :]
+        return metadata.loc[metadata["ID"] == "REF_AREA", :]
     elif filter == "FREQ":
-        return metadata.loc[metadata["ID"] == "CL_FREQ", :]
+        return metadata.loc[metadata["ID"] == "FREQ", :]
     else:
         return "Filter not implemented yet."
 
