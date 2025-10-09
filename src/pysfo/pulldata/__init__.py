@@ -10,6 +10,8 @@ from .fred import FREDcleaned
 from .imf_ifs import imfIFS
 from . import other 
 
+del efa_row, frb_exchangerates, fof, fomc_dates, fred, imf_ifs 
+
 __all__ = [
     'cmns',
     'EFARow',

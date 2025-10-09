@@ -45,12 +45,17 @@ efa_tables = {
 
 #%%========== EFARow class retriever ==========%%#
 
+import textwrap
+
 class EFARow:
     @staticmethod
     def about():
 
-        return (
-            "Enhanced Financial Accounts of the USA (Rest of the World). Provide monthly, country-level detail on international portfolio investment holdings of long-term securities, complementing the aggregated quarterly data in table L.133 (“Rest of the World”) of the main Financial Accounts."
+        return textwrap.dedent("""\
+            Enhanced Financial Accounts of the USA (Rest of the World). Provide monthly,
+            country-level detail on international portfolio investment holdings of long-term
+            securities, complementing the aggregated quarterly data in table L.133 (“Rest of 
+            the World”) of the main Financial Accounts."""
         )
 
     @staticmethod
@@ -60,20 +65,24 @@ class EFARow:
 
         efa_row_dir = get_data_path() / "efa_row"
 
-        return (
-            f"To use this dataset, download the EFA Rest of the World data from the FRB. You should manually download each of the following individual tables: \n\n"
-            'international-portfolio-investment-table1-historical.csv\n'
-            'international-portfolio-investment-table1a-historical.csv\n'
-            'international-portfolio-investment-table1b-historical.csv\n'
-            'international-portfolio-investment-table1c-historical.csv\n'
-            'international-portfolio-investment-table1d-historical.csv\n'
-            'international-portfolio-investment-table1e-historical.csv\n'
-            'international-portfolio-investment-table2-historical.csv\n'
-            'international-portfolio-investment-table2a-historical.csv\n'
-            'international-portfolio-investment-table2b-historical.csv\n\n'
-            'And store them in the following directory:\n'
-            f"{efa_row_dir}\n"
-        )
+        return textwrap.dedent(f"""\
+            To use this dataset, download the EFA Rest of the World data from the FRB. You should manually download each of the following individual tables:
+                        
+            international-portfolio-investment-table1-historical.csv
+            international-portfolio-investment-table1a-historical.csv
+            international-portfolio-investment-table1b-historical.csv
+            international-portfolio-investment-table1c-historical.csv
+            international-portfolio-investment-table1d-historical.csv
+            international-portfolio-investment-table1e-historical.csv
+            international-portfolio-investment-table2-historical.csv
+            international-portfolio-investment-table2a-historical.csv
+            international-portfolio-investment-table2b-historical.csv
+                        
+            And store them in the following directory:
+                        
+            "{efa_row_dir}"
+
+        """) 
 
     def get(level = "agg"):
 

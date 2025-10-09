@@ -1,6 +1,10 @@
 #%%
 
+import textwrap
+
 class RestatementMatrices:
+
+    """Interface to get Restatement Matrices (CMNS, 2021)."""
 
     @staticmethod
     def about():
@@ -16,10 +20,12 @@ class RestatementMatrices:
 
         file_path = get_data_path() / "cmns/Restatement_Matrices.dta"
 
-        return (
-            f"To use this dataset, download the Restatement Matrices from the GCAP webpage and store them so that the main data path is\n"
-            f"{file_path}\n"
-        )
+        return textwrap.dedent(f"""\
+            To use this dataset, download the Restatement Matrices from the GCAP webpage and store them so that the main data path is
+                               
+            "{file_path}"
+
+        """) 
     
     @staticmethod
     def get():
