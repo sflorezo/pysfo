@@ -210,22 +210,22 @@ class dbDownload:
 
         from ..config import get_data_path
         
-        self.base_dir = get_data_path() / "imf_ifs"
-        self.indicator_df = _decompose_indicator_df()
+        self._base_dir = get_data_path() / "imf_ifs"
+        self._indicator_df = _decompose_indicator_df()
 
     def main_series_documentation(self, store_docs = False):
         
         lines = []
-        for s1 in self.indicator_df["DESCRIPTION_TEXT_1"].unique():
+        for s1 in self._indicator_df["DESCRIPTION_TEXT_1"].unique():
             lines.append(f"\n#========== subdata: '{s1}' ==========#\n")
-            mask1 = self.indicator_df["DESCRIPTION_TEXT_1"] == s1
-            hdf1 = self.indicator_df.loc[mask1, :]
+            mask1 = self._indicator_df["DESCRIPTION_TEXT_1"] == s1
+            hdf1 = self._indicator_df.loc[mask1, :]
             for s2 in hdf1["DESCRIPTION_TEXT_2"].unique():
                 lines.append(f"{s2}")
         result_str = "\n".join(lines)
         
         if store_docs:
-            docs_dir = os.path.join(self.base_dir, "docs")
+            docs_dir = os.path.join(self._base_dir, "docs")
 
             if os.path.exists(docs_dir):
                 pass
@@ -242,11 +242,11 @@ class dbDownload:
 
         subdata = subdata.replace(" ", "_")
         
-        documentation_string = _subdata_documentation_fullstr(subdata, self.base_dir)
+        documentation_string = _subdata_documentation_fullstr(subdata, self._base_dir)
 
         if store_docs:
             
-            docs_dir = os.path.join(self.base_dir, "docs")
+            docs_dir = os.path.join(self._base_dir, "docs")
 
             if os.path.exists(docs_dir):
                 pass
@@ -264,3 +264,51 @@ class dbDownload:
     def fetch_and_save_series_by_subdata(self, subdata, save_dir, force_fetch = False):
         
         _fetch_and_save_series_by_subdata(subdata, save_dir, force_fetch)
+    
+    def example_code(self):
+
+        example_code = (
+
+            """
+            #========== packages and paths ==========#
+
+            import pysfo.pulldata as pysfo_pull
+            from pysfo.basic.basicfns import *
+            import os
+
+            pysfo_pull.set_data_path("<RAW_DATA_PATH_ROOT>")
+            ifs_dbDownload = pysfo_pull.imfIFS.dbDownload()
+
+            #========== fetch data ==========#
+
+            # get main subdata documentation
+
+            _ = ifs_dbDownload.main_series_documentation(store_docs = True)
+
+            # fetch interest subdatasets, and get documentation. 
+            # . Possible subdata to choose from is shown in documentation (stored automatically previous line at <RAW>/imf_ifs.) 
+
+            fetch_subdata_list = [
+                "International Investment Positions",
+                "Exchange Rates",
+                "Financial",
+                "Financial Market Prices",
+                "Fiscal",
+                "Budgetary Central Government",
+                "Central Government (including Social Security)",
+                "Gross Domestic Product",
+                "Prices"
+            ]
+
+            for subdata in fetch_subdata_list:
+                
+                # fetch subdata
+                ifs_dbDownload.fetch_and_save_series_by_subdata(subdata, save_dir = os.path.dirname(__file__))
+
+                # generate documentation for each subdata (stored in <RAW>/imf_ifs)
+                _ = ifs_dbDownload.subseries_documentation(subdata, store_docs = True)
+
+            """
+        )
+
+        return example_code

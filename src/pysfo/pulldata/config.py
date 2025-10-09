@@ -38,8 +38,8 @@ def get_data_path() -> Path:
         raise RuntimeError(
             "Data path not set. Please call `set_data_path('/path/to/data')` first.\n\n"
             "Example:\n"
-            "    import mypackage.config as cfg\n"
-            "    cfg.set_data_path('/Users/you/data/raw')"
+            "    import pysfo.pulldata as pysfo_pull\n"
+            "    pysfo_pull.set_data_path('/Users/you/data/raw')"
         )
 
     return _data_path
