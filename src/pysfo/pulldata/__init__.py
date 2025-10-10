@@ -8,9 +8,8 @@ from .fof import FoF
 from .fomc_dates import FOMCdates
 from .fred import FREDcleaned
 from .imf_ifs import imfIFS
+from .imf_weo import imfWEO
 from . import other 
-
-del efa_row, frb_exchangerates, fof, fomc_dates, fred, imf_ifs 
 
 __all__ = [
     'cmns',
@@ -21,5 +20,6 @@ __all__ = [
     'FOMCdates',
     'FREDcleaned',
     'imfIFS',
+    'imfWEO',
     'other'
 ]

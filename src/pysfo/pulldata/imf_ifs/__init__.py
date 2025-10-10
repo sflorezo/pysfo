@@ -1,6 +1,6 @@
 
 import textwrap
-from .dbnomics_download import dbDownload
+from .imf_ifs_db_download import dbDownload
 from . import upload_after_fetch
 
 class imfIFS:
