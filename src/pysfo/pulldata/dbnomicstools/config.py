@@ -1,4 +1,4 @@
-def load_json(file_path):
+def _load_json(file_path):
 
     import json
 
@@ -13,12 +13,11 @@ def load_json(file_path):
         print(f"Error parsing JSON file: {file_path}")
         return None
 
-
-def extract_indicators_from_json(json_path):
+def _extract_filters_from_json(json_path):
 
     import pandas as pd
 
-    metadata = load_json(json_path)
+    metadata = _load_json(json_path)
 
 
     dim_codes = metadata["dimensions_codes_order"]
@@ -49,42 +48,16 @@ def extract_indicators_from_json(json_path):
 
     return df
 
+def get_filters(json_metadata_path, filter = None):
+
+    metadata = _extract_filters_from_json(json_metadata_path)
+
+    if filter is not None:
+        return metadata.loc[metadata["ID"] == f"{filter}", :]
+
+    return metadata
+    
 __all__ = [
-    "extract_indicators_from_json"
+    "get_filters"
 ]
 
-# CLEAN: Old version of the function
-# def extract_indicators_from_json(json_path):
-
-#     import pandas as pd
-
-#     metadata = load_json(json_path)
-    
-#     code_lists = metadata.get('Structure', {}).get('CodeLists', {}).get('CodeList', [])
-#     ids = [code.get('@id') for code in code_lists]
-#     codes = [code.get('Code') for code in code_lists]
-#     names = [code.get('Name') for code in code_lists]
-
-#     df_list = []
-
-#     for id_, code, name in zip(ids, codes, names):
-        
-#         elems = [
-#             [
-#                 id_,
-#                 name["#text"],
-#                 el["@value"], 
-#                 el["Description"]["#text"]
-#             ] for el in code
-#         ]
-
-#         df = pd.DataFrame(
-#             data = elems,
-#             columns = ["ID", "NAME", "VALUE", "DESCRIPTION_TEXT"]
-#         )
-
-#         df_list.append(df)
-
-#     df = pd.concat(df_list, axis = 0)
-
-#     return df

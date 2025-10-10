@@ -1,29 +1,14 @@
 #%%========== helper functions ==========%%#
 
-def _get_filters(filter = None):
+def _decompose_indicator_df():
 
     import os
-    from pysfo.pulldata.dbnomicstools.config import extract_indicators_from_json
+    from pysfo.pulldata.dbnomicstools.config import get_filters
 
     current_dir = os.path.dirname(__file__)
-    json_path = os.path.join(current_dir, "dbnomics_datastructure.json")
-
-    metadata = extract_indicators_from_json(json_path)
-
-    if filter is None:
-        return "Please specify a filter of ['INDICATOR', 'REF_AREA', 'FREQ']"
-    elif filter == "INDICATOR":
-        return metadata.loc[metadata["ID"] == "INDICATOR", :]
-    elif filter == "REF_AREA":
-        return metadata.loc[metadata["ID"] == "REF_AREA", :]
-    elif filter == "FREQ":
-        return metadata.loc[metadata["ID"] == "FREQ", :]
-    else:
-        return "Filter not implemented yet."
-
-def _decompose_indicator_df():
+    json_path = os.path.join(current_dir, "imf_ifs_db_datastructure.json")
     
-    indicator_df = _get_filters(filter = "INDICATOR")
+    indicator_df = get_filters(json_path, filter = "INDICATOR")
 
     DESC = indicator_df["DESCRIPTION_TEXT"].str.split(",", expand = True)
     DESC = DESC.apply(lambda col : col.str.strip(), axis = 1)
@@ -39,6 +24,7 @@ def _fetch_and_save_series_by_subdata(subdata, save_dir, force_fetch = False):
     import os
     from joblib import Parallel, delayed
     from functools import partial
+    from ..dbnomicstools.config import get_filters
     
     #---- helper functions
 
@@ -70,8 +56,8 @@ def _fetch_and_save_series_by_subdata(subdata, save_dir, force_fetch = False):
 
     subdata_list = [subdata] if isinstance(subdata, str) else subdata
 
-    frequency_df = _get_filters(filter = "FREQ")
-    ref_area_df = _get_filters(filter = "REF_AREA")
+    frequency_df = get_filters(filter = "FREQ")
+    ref_area_df = get_filters(filter = "REF_AREA")
     indicator_df = _decompose_indicator_df()
 
     subdata_list_all = indicator_df["DESCRIPTION_TEXT_1"].unique()

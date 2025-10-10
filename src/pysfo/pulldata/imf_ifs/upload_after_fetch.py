@@ -46,14 +46,18 @@ def get(subdata, INDICATOR, FREQ):
     import pandas as pd
     import country_converter as coco
     import numpy as np
-    from ..config import get_data_path
-
+    import pysfo.pulldata as pysfo_pull
+    
+    # pysfo_pull.set_data_path("D:/Dropbox/80_data/raw")
+    
     cc = coco.CountryConverter()
-    imf_ifs_dir = get_data_path() / "imf_ifs"
+    imf_ifs_dir = pysfo_pull.get_data_path() / "imf_ifs"
     
     INDICATOR = [INDICATOR] if type(INDICATOR) == str else INDICATOR
 
     FREQ = [FREQ] if type(FREQ) == str else FREQ
+
+    subdata = subdata.replace(" ", "_")
 
     df = pd.read_csv(f"{imf_ifs_dir}/{subdata}.csv", dtype = str)
     df = _rename_dataset(df)
@@ -66,6 +70,12 @@ def get(subdata, INDICATOR, FREQ):
         & (df["indicator"].isin(INDICATOR))
     )
     df = df.loc[keep, :]
+
+    # for checks of data names
+    # h_tmp = df.copy()
+    # h_tmp["min_date"] = df.groupby("reference_area")["period"].transform("min")
+    # h_tmp["max_date"] = df.groupby("reference_area")["period"].transform("max")
+    # h_tmp[["series_name", "reference_area", "min_date", "max_date"]].sort_values(by = "reference_area").drop_duplicates().to_csv(f"{temp}/check.csv")
 
     if len(df) == 0:
         raise ValueError(f"Series {INDICATOR} not found in {subdata}.")
@@ -108,7 +118,7 @@ def get(subdata, INDICATOR, FREQ):
         df["cty_name"] = np.where(df["cty_iso3"] == old, new, df["cty_name"])
 
     # Leave this as future check.
-    # df[["reference_area", "cty_name", "cty_iso2", "cty_iso3"]].drop_duplicates().sort_values(by = ["cty_iso3"]).to_csv(f"{temp}/check.csv")
+    # df[["reference_area", "cty_name", "cty_iso2", "cty_iso3"]].drop_duplicates().sort_values(by = ["reference_area"]).to_csv(f"{temp}/check.csv")
     # mask = (
     #     (df["reference_area"].isna()) 
     #     | (df["cty_name"].isna()) 
