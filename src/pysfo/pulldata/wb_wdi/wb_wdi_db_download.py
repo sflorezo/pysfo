@@ -4,9 +4,11 @@ def _decompose_indicator_df():
 
     import os
     from pysfo.pulldata.dbnomicstools.config import get_filters
+    import re
 
     current_dir = os.path.dirname(__file__)
-    json_metadata_path = os.path.join(current_dir, "WDI.customization")
+    file = [file for file in os.listdir(current_dir) if re.findall(".customization", file)][0]
+    json_metadata_path = os.path.join(current_dir, file)
     
     indicator_df = get_filters(json_metadata_path, filter = "indicator")
 
@@ -61,7 +63,8 @@ def _fetch_and_save_series_all_ctys(indicator_list, save_dir, force_fetch = Fals
     #---- fetch series main code
 
     current_dir = os.path.dirname(__file__)
-    json_metadata_path = os.path.join(current_dir, "WDI.customization")
+    file = [file for file in os.listdir(current_dir) if re.findall(".customization", file)][0]
+    json_metadata_path = os.path.join(current_dir, file)
 
     frequency_df = get_filters(json_metadata_path, filter = "frequency")
     ref_area_df = get_filters(json_metadata_path, filter = "country")
@@ -140,9 +143,10 @@ class dbDownload:
 
     def __init__(self):
 
-        from pysfo.pulldata.config import get_data_path
+        import os
+        from pathlib import Path
         
-        self._base_dir = get_data_path() / "wb_wdi"
+        self._base_dir = Path(os.getcwd())
         self._indicator_df = _decompose_indicator_df()
 
     def main_series_documentation(self, store_docs=False):

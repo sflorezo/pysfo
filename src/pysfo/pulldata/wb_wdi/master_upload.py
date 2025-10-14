@@ -61,10 +61,14 @@ def get(indicator, frequency = None):
     df.columns = df.columns.str.replace(" ", "_")
 
     # keep indicator
+    indicator = [indicator] if type(indicator) == str else indicator
+    keep = (
+        (df["indicator"].isin(indicator))
+    )
+    df = df.loc[keep, :]
 
     if frequency is not None:
         frequency = [frequency] if type(frequency) == str else frequency
-        keep = df["indicator"].isin(indicator)
         keep = (
             (df["frequency"].isin(frequency))
         )

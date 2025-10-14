@@ -28,6 +28,11 @@ def _fetch_and_save_series_by_subdata(subdata, save_dir, force_fetch = False):
     from functools import partial
     from pysfo.pulldata.dbnomicstools.config import get_filters
     import re
+
+    # import pysfo.pulldata as pysfo_pulldata
+    # pysfo_pulldata.set_data_path("D:/Dropbox/80_data/raw")
+    # subdata = "Assets"
+    # save_dir = pysfo_pulldata.get_data_path() / "imf_bop"
     
     #---- helper functions
 
@@ -49,10 +54,10 @@ def _fetch_and_save_series_by_subdata(subdata, save_dir, force_fetch = False):
 
         return chunked
 
-    fetch_imf_ifs = partial(
+    fetch_partial = partial(
         db.fetch_series,
         provider_code = "IMF",
-        dataset_code = "IFS"
+        dataset_code = "BOP"
     )
 
     #---- fetch series main code
@@ -103,7 +108,7 @@ def _fetch_and_save_series_by_subdata(subdata, save_dir, force_fetch = False):
             fetch_ref_areas = ref_area_df.loc[:, "VALUE"].to_list()
             
             get_dimensions = {
-                "INDICATOR": fetch_indicators,
+                "INDICATOR" : fetch_indicators,
             }
 
             max_nb_series_fetched = (
@@ -131,10 +136,12 @@ def _fetch_and_save_series_by_subdata(subdata, save_dir, force_fetch = False):
 
                 else :
                     
-                    if subdata_ != "Exchange Rates":
-                        n = int(len(fetch_ref_areas) / 10)
+                    # recall n is size of each individual batch.
+
+                    if subdata_ == "Assets":
+                        n = 1
                     else:
-                        n = int(len(fetch_indicators) / 10)
+                        n = 1 # int(len(fetch_indicators) / 10)
                     dimension_batches = chunk_dimensions_dict(get_dimensions, n)
                     max_nb_series_batches = [
                         len(batch["INDICATOR"]) 
@@ -144,7 +151,7 @@ def _fetch_and_save_series_by_subdata(subdata, save_dir, force_fetch = False):
                     ]
 
                     results = Parallel(n_jobs = -1, verbose=10)(
-                        delayed(fetch_imf_ifs)(
+                        delayed(fetch_partial)(
                             dimensions = dim_batch,
                             max_nb_series = max_nb_s
                         ) 
@@ -278,7 +285,7 @@ class dbDownload:
         _fetch_and_save_series_by_subdata(subdata, save_dir, force_fetch)
     
     def example_code(self):
-
+        
         example_code = (
 
             """
@@ -287,39 +294,34 @@ class dbDownload:
             import pysfo.pulldata as pysfo_pull
             from pysfo.basic.basicfns import *
             import os
+            from dotenv import load_dotenv
 
-            pysfo_pull.set_data_path("<RAW_DATA_PATH_ROOT>")
-            ifs_dbDownload = pysfo_pull.imfIFS.dbDownload()
+            load_dotenv("C:/Users/saflo/.env")
+            pysfo_pull.set_data_path(os.getenv("MASTER_RAW_PATH"))
+            bop_dbDownload = pysfo_pull.imfBOP.dbDownload()
+
 
             #========== fetch data ==========#
 
-            # get main subdata documentation
+            # get main subdata descriptions
 
-            _ = ifs_dbDownload.main_series_documentation(store_docs = True)
+            _ = bop_dbDownload.main_series_documentation(store_docs = True)
 
-            # fetch interest subdatasets, and get documentation. 
-            # . Possible subdata to choose from is shown in documentation (stored automatically previous line at <RAW>/imf_ifs.) 
+            # # fetch interest subdatasets, and get documentation
 
             fetch_subdata_list = [
-                "International Investment Positions",
-                "Exchange Rates",
-                "Financial",
-                "Financial Market Prices",
-                "Fiscal",
-                "Budgetary Central Government",
-                "Central Government (including Social Security)",
-                "Gross Domestic Product",
-                "Prices"
+                "Supplementary Items",
+                "Exceptional Financing",
+                "Financial Account",
+                "Assets",
+                "Assets (with Fund Record)",
+                "Liabilities"
             ]
 
             for subdata in fetch_subdata_list:
-                
-                # fetch subdata
-                ifs_dbDownload.fetch_and_save_series_by_subdata(subdata, save_dir = os.path.dirname(__file__))
 
-                # generate documentation for each subdata (stored in <RAW>/imf_ifs)
-                _ = ifs_dbDownload.subseries_documentation(subdata, store_docs = True)
-
+                bop_dbDownload.fetch_and_save_series_by_subdata(subdata, save_dir = os.path.dirname(__file__))
+                _ = bop_dbDownload.subseries_documentation(subdata, store_docs = True)
             """
         )
 
