@@ -2,6 +2,9 @@
 
 import pytest
 import pysfo.pulldata as pysfo_pull
+from pysfo.config import suppress_print
+
+# pysfo_pull.set_data_path("D:/Dropbox/80_data/raw")
 
 #%%========== tests ==========%%#
 
@@ -56,20 +59,29 @@ def test_imf_ifs_upload():
     print(f"{test_message}\n\n")
     
     print("Data Glimpse:\n" + "-"*len("MData Glimpse:") + "\n")
-    try:
-        save_dir = "D:/Dropbox/80_data/raw/imf_ifs"
-        subdata = "International Investment Positions"
-        pysfo_pull.imfIFS.dbDownload().fetch_and_save_series_by_subdata(subdata, save_dir)
-
-        imf_ifs = pysfo_pull.imfIFS.get(
-            subdata = "Gross_Domestic_Product",
-            INDICATOR = ["NGDP_NSA_XDC",
-                         "NGDP_R_NSA_XDC"],
-            FREQ = "Q"
-        )
-        print(imf_ifs.tail(4))
-        assert not imf_ifs.empty
-    except FileNotFoundError:
-        pytest.skip("IMF IFS data missing.")
+    imf_ifs = pysfo_pull.imfIFS.get(
+        subdata = "Exchange_Rates",
+        INDICATOR = ["EDNE_USD_XDC_RATE"],
+        FREQ = "M"
+    )
+    print(imf_ifs.tail(4))
 
 
+#--- imf_ifs check_reporting
+
+def test_imf_ifs_check_reporting():
+    test_message = "TRY CHECK REPORTING OF SERIES"
+    print("\n\n")
+    print("_"*len(test_message))
+    print(f"{test_message}\n\n")
+    
+    print("Data Glimpse:\n" + "-"*len("MData Glimpse:") + "\n")
+    
+    subdata = "International Investment Positions"
+    INDICATOR = "IAPD_BP6_USD"
+    FREQ = "Q"
+    report = pysfo_pull.imfIFS.check_reporting(subdata, INDICATOR, FREQ)
+    
+    print(report.tail(4))
+        
+    

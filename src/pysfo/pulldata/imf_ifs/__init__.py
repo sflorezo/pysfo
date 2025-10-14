@@ -1,7 +1,8 @@
 
 import textwrap
 from .imf_ifs_db_download import dbDownload
-from . import upload_after_fetch
+from .check_reporting import check_reporting
+from .upload_after_fetch import master_upload
 
 class imfIFS:
 
@@ -62,7 +63,11 @@ class imfIFS:
 
     @staticmethod
     def get(subdata, INDICATOR, FREQ):
-        return upload_after_fetch.get(subdata, INDICATOR, FREQ)
+        return master_upload.get(subdata, INDICATOR, FREQ)
+    
+    @staticmethod
+    def check_reporting(subdata, INDICATOR, FREQ, report_percen = 1, start_date = None, end_date = None):
+        return check_reporting(subdata, INDICATOR, FREQ, report_percen, start_date, end_date)
 
 __all__ = [
     "imfIFS"

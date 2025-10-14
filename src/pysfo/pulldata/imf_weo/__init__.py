@@ -1,7 +1,8 @@
-
 import textwrap
 from .imf_weo_db_download import dbDownload
 from . import upload_after_fetch
+
+raise ImportError("pulldata.imf_weo is not yet implemented.")
 
 class imfWEO:
 
