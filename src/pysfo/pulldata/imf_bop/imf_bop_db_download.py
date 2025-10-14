@@ -117,8 +117,6 @@ def _fetch_and_save_series_by_subdata(subdata, save_dir, force_fetch = False):
                 * len(fetch_indicators)
             )
 
-            print(f". Max number of series fetched: {max_nb_series_fetched}")
-
             try :
                 
                 if max_nb_series_fetched <= 40000:
@@ -149,6 +147,10 @@ def _fetch_and_save_series_by_subdata(subdata, save_dir, force_fetch = False):
                         * len(fetch_indicators)
                         for batch in dimension_batches
                     ]
+
+                    batch_job_size = len(dimension_batches)
+
+                    print(f". Running batch job with: {batch_job_size}")
 
                     results = Parallel(n_jobs = -1, verbose=10)(
                         delayed(fetch_partial)(
@@ -226,10 +228,9 @@ class dbDownload:
 
     def __init__(self):
 
-        import os
-        from pathlib import Path
+        from pysfo.pulldata import get_data_path
         
-        self._base_dir = Path(os.getcwd())
+        self._base_dir = get_data_path() / "imf_bop"
         self._indicator_df = _decompose_indicator_df()
 
     def main_series_documentation(self, store_docs = False):

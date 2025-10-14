@@ -61,8 +61,8 @@ class wbWDI:
         pass
 
     @staticmethod
-    def get(indicator, frequency = None):
-        return master_upload.get(indicator, frequency)
+    def get(indicator, frequency = None, silent = False):
+        return master_upload.get(indicator, frequency, silent)
 
 __all__ = [
     "wbWDI"
