@@ -2,7 +2,7 @@
 import textwrap
 from .imf_bop_db_download import dbDownload
 from .check_reporting import check_reporting
-from .upload_after_fetch import master_upload
+from . import master_upload
 
 class imfBOP:
 
@@ -62,8 +62,8 @@ class imfBOP:
         pass
 
     @staticmethod
-    def get(subdata, INDICATOR, FREQ):
-        return master_upload.get(subdata, INDICATOR, FREQ)
+    def get(subdata, INDICATOR, FREQ, silent = False):
+        return master_upload.get(subdata, INDICATOR, FREQ, silent)
     
     @staticmethod
     def check_reporting(subdata, INDICATOR, FREQ, report_percen = 1, start_date = None, end_date = None):

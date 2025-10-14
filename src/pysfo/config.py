@@ -1,6 +1,7 @@
 import os
 import sys, io
 from contextlib import contextmanager
+from contextlib import redirect_stdout
 
 
 def set_api_keys(api_name = None, api_key = None):
@@ -32,14 +33,16 @@ def set_api_keys(api_name = None, api_key = None):
     else:
         raise ValueError(f"No API key provided for {api_name}.")
     
-@contextmanager
-def suppress_print():
-    saved_stdout = sys.stdout
-    sys.stdout = io.StringIO()
-    try:
-        yield
-    finally:
-        sys.stdout = saved_stdout
+def silent_call(func, *args, verbose=True, **kwargs):
+    """
+    Calls `func` while suppressing any print output if verbose=False.
+    Returns the function's output.
+    """
+    if verbose:
+        return func(*args, **kwargs)
+    else:
+        with io.StringIO() as buf, redirect_stdout(buf):
+            return func(*args, **kwargs)
 
 def general_configs():
     

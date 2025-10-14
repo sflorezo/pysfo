@@ -21,9 +21,6 @@ def _fix_country_identifiers():
     }
 
     rename_ctyname_to_iso3 = {
-        # "Euro area (Member States and Institutions of the Euro Area) changing composition": "EMU",
-        # "Netherlands Antilles": "ANT",
-        # "East Germany" : "DDR"
     }
 
     rename_ctyname_long_to_short = {
@@ -41,12 +38,13 @@ def _fix_country_identifiers():
 
 #%%========== data retriever ==========%%#
 
-def get(indicator, frequency = None):
+def get(indicator, frequency = None, silent = False):
 
     import pandas as pd
     import country_converter as coco
     import numpy as np
     import pysfo.pulldata as pysfo_pull
+    from pysfo.basic import silent_call
 
     # pysfo_pull.set_data_path("D:/Dropbox/80_data/raw")
     
@@ -145,12 +143,12 @@ def get(indicator, frequency = None):
     df["cty_name"] = df["country_label"]
 
     # direct renaming
-
+    
     for old, new in rename_preprocess_country.items():
         mask = df["country_label"] == old
         df["country_label"] = np.where(mask, new, df["country_label"])
 
-    df["cty_iso2"] = cc.pandas_convert(series = df["country_label"], to = 'ISO2')  
+    df["cty_iso2"] = silent_call(cc.pandas_convert, series=df["country_label"], to='ISO2', verbose = not silent)
 
     for old, new in rename_ctyname_to_iso2.items():
         df["cty_iso2"] = np.where(df["country_label"] == old, new, df["cty_iso2"])
@@ -193,7 +191,7 @@ def get(indicator, frequency = None):
     df = df[keep_cols].sort_values(by = ["cty_iso3", "period"])
     df.rename(columns = {"master_country" : "country"}, inplace = True)
 
-    if True in df[["period", "country"]].duplicated().values:
+    if True in df[["period", "country", "indicator"]].duplicated().values:
         raise ValueError(f"Duplicates found while cleaning {indicator}. Please check.")
 
     # set final formats

@@ -2,7 +2,7 @@
 import textwrap
 from .imf_ifs_db_download import dbDownload
 from .check_reporting import check_reporting
-from .upload_after_fetch import master_upload
+from . import master_upload
 
 class imfIFS:
 

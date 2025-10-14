@@ -12,44 +12,46 @@ def _fix_country_identifiers():
 
     ignore = ["Yemen", "Namibia"]
 
-    rename_preprocess_ref_area = {
+    rename_preprocess_country = {
         "Curacao & St. Maarten" : "St. Maarten"
     }
 
-    rename_ctyname_to_iso3 = {
-        "Euro area (Member States and Institutions of the Euro Area) changing composition": "EMU",
-        "Netherlands Antilles": "ANT",
-        "East Germany" : "DDR"
+    rename_ctyname_to_iso2 = {
     }
 
-    rename_iso3_to_ctyname = {
-        "EMU" : "Euro Area",
-        "ANT" : "Netherlands Antilles",
-        "DDR" : "East Germany"
+    rename_ctyname_to_iso3 = {
+    }
+
+    rename_ctyname_long_to_short = {
     }
 
     return_ = (
         ignore,
-        rename_preprocess_ref_area,
+        rename_preprocess_country,
+        rename_ctyname_to_iso2,
         rename_ctyname_to_iso3, 
-        rename_iso3_to_ctyname
+        rename_ctyname_long_to_short
     )
     
     return return_
 
 #%%========== data retriever ==========%%#
 
-def get(subdata, INDICATOR, FREQ):
+def get(subdata, INDICATOR, FREQ, silent = False):
 
     import pandas as pd
     import country_converter as coco
     import numpy as np
     import pysfo.pulldata as pysfo_pull
+    from pysfo.basic import silent_call
 
     # pysfo_pull.set_data_path("D:/Dropbox/80_data/raw")
+    # subdata = "Liabilities"
+    # INDICATOR = "ILPD_BP6_USD"
+    # FREQ = "A"
     
     cc = coco.CountryConverter()
-    imf_ifs_dir = pysfo_pull.get_data_path() / "imf_ifs"
+    upload_dir = pysfo_pull.get_data_path() / "imf_bop"
     
     INDICATOR = [INDICATOR] if type(INDICATOR) == str else INDICATOR
 
@@ -57,7 +59,7 @@ def get(subdata, INDICATOR, FREQ):
 
     subdata = subdata.replace(" ", "_")
 
-    df = pd.read_csv(f"{imf_ifs_dir}/{subdata}.csv", dtype = str)
+    df = pd.read_csv(f"{upload_dir}/{subdata}.csv", dtype = str)
     df = _rename_dataset(df)
     df.columns = df.columns.str.lower()
     df.columns = df.columns.str.replace(" ", "_")
@@ -130,8 +132,9 @@ def get(subdata, INDICATOR, FREQ):
     (
         _,
         rename_preprocess_ref_area, 
+        rename_ctyname_to_iso2,
         rename_ctyname_to_iso3, 
-        rename_iso3_to_ctyname
+        rename_ctyname_long_to_short
     ) = _fix_country_identifiers()
 
     df["cty_name"] = df["reference_area"]
@@ -142,17 +145,16 @@ def get(subdata, INDICATOR, FREQ):
         mask = df["cty_name"] == old
         df["cty_name"] = np.where(mask, new, df["cty_name"])
 
-    df["cty_iso3"] = cc.pandas_convert(series = df["cty_name"], to = 'ISO3')  
-
+    for old, new in rename_ctyname_to_iso2.items():
+        df["cty_iso2"] = np.where(df["country_label"] == old, new, df["cty_iso2"])
+    
+    df["cty_iso3"] = silent_call(cc.pandas_convert, series=df["cty_name"], to='ISO3', verbose = not silent)
+    
     for old, new in rename_ctyname_to_iso3.items():
         df["cty_iso3"] = np.where(df["cty_name"] == old, new, df["cty_iso3"])
 
-    df["cty_name"] = cc.pandas_convert(series = df["cty_iso3"], src = 'ISO3', to = 'name_short')
-
-    for old, new in rename_iso3_to_ctyname.items():
-        df["cty_name"] = np.where(df["cty_iso3"] == old, new, df["cty_name"])
-
-    df["cty_name"] = np.where(df["cty_name"] == "not found", df["reference_area"], df["cty_name"])
+    for old, new in rename_ctyname_long_to_short.items():
+        df["cty_name"] = np.where(df["cty_name"] == old, new, df["cty_name"])
 
     # Leave this as future check.
     # df[["reference_area", "cty_name", "cty_iso2", "cty_iso3"]].drop_duplicates().sort_values(by = ["reference_area"]).to_csv(f"{temp}/check.csv")
@@ -188,7 +190,7 @@ def get(subdata, INDICATOR, FREQ):
     df = df[keep_cols].sort_values(by = ["cty_iso3", "period"])
     df.rename(columns = {"master_ref_area" : "ref_area"}, inplace = True)
 
-    if True in df[["period", "ref_area"]].duplicated().values:
+    if True in df[["period", "ref_area", "indicator"]].duplicated().values:
         raise ValueError(f"Duplicates found while cleaning {subdata}. Please check.")
 
     # set final formats

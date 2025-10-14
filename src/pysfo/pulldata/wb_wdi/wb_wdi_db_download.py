@@ -143,10 +143,9 @@ class dbDownload:
 
     def __init__(self):
 
-        import os
-        from pathlib import Path
+        from pysfo.pulldata import get_data_path
         
-        self._base_dir = Path(os.getcwd())
+        self._base_dir = get_data_path() / "wb_wdi"
         self._indicator_df = _decompose_indicator_df()
 
     def main_series_documentation(self, store_docs=False):
