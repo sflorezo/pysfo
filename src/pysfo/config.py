@@ -1,5 +1,7 @@
 import os
-import json
+import sys, io
+from contextlib import contextmanager
+
 
 def set_api_keys(api_name = None, api_key = None):
     
@@ -29,3 +31,19 @@ def set_api_keys(api_name = None, api_key = None):
         return f"{env_var} set successfully."
     else:
         raise ValueError(f"No API key provided for {api_name}.")
+    
+@contextmanager
+def suppress_print():
+    saved_stdout = sys.stdout
+    sys.stdout = io.StringIO()
+    try:
+        yield
+    finally:
+        sys.stdout = saved_stdout
+
+def general_configs():
+    
+    import pandas as pd
+
+    pd.set_option("display.max_columns", 100)
+    pd.set_option("display.max_rows", 300)

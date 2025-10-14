@@ -6,9 +6,9 @@ def _decompose_indicator_df():
     from pysfo.pulldata.dbnomicstools.config import get_filters
 
     current_dir = os.path.dirname(__file__)
-    json_path = os.path.join(current_dir, "imf_ifs_db_datastructure.json")
+    json_metadata_path = os.path.join(current_dir, "IFS.customization")
     
-    indicator_df = get_filters(json_path, filter = "INDICATOR")
+    indicator_df = get_filters(json_metadata_path, filter = "INDICATOR")
 
     DESC = indicator_df["DESCRIPTION_TEXT"].str.split(",", expand = True)
     DESC = DESC.apply(lambda col : col.str.strip(), axis = 1)
@@ -24,7 +24,7 @@ def _fetch_and_save_series_by_subdata(subdata, save_dir, force_fetch = False):
     import os
     from joblib import Parallel, delayed
     from functools import partial
-    from ..dbnomicstools.config import get_filters
+    from pysfo.pulldata.dbnomicstools.config import get_filters
     
     #---- helper functions
 
@@ -56,8 +56,11 @@ def _fetch_and_save_series_by_subdata(subdata, save_dir, force_fetch = False):
 
     subdata_list = [subdata] if isinstance(subdata, str) else subdata
 
-    frequency_df = get_filters(filter = "FREQ")
-    ref_area_df = get_filters(filter = "REF_AREA")
+    current_dir = os.path.dirname(__file__)
+    json_metadata_path = os.path.join(current_dir, "IFS.customization")
+
+    frequency_df = get_filters(json_metadata_path, filter = "FREQ")
+    ref_area_df = get_filters(json_metadata_path, filter = "REF_AREA")
     indicator_df = _decompose_indicator_df()
 
     subdata_list_all = indicator_df["DESCRIPTION_TEXT_1"].unique()
@@ -159,7 +162,7 @@ def _subdata_documentation_fullstr(subdata, base_dir):
     import io
 
     #---- helper functions
-
+    
     def _rename_dataset(df):
         return df.rename(columns={"Indicator": "indicator_label"})
 

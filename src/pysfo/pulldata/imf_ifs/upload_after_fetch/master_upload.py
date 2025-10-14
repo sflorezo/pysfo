@@ -10,14 +10,16 @@ def _rename_dataset(df):
 
 def _fix_country_identifiers():
 
+    ignore = ["Yemen", "Namibia"]
+
+    rename_preprocess_ref_area = {
+        "Curacao & St. Maarten" : "St. Maarten"
+    }
+
     rename_ctyname_to_iso3 = {
         "Euro area (Member States and Institutions of the Euro Area) changing composition": "EMU",
         "Netherlands Antilles": "ANT",
         "East Germany" : "DDR"
-    }
-
-    rename_ctyname_to_iso2 = {
-        "Namibia": "NA"
     }
 
     rename_iso3_to_ctyname = {
@@ -26,28 +28,24 @@ def _fix_country_identifiers():
         "DDR" : "East Germany"
     }
 
-    tuple_cases_iso3 = {
-        ("CUW", "SXM") : "CUW"
-    }
-
     return_ = (
-        rename_ctyname_to_iso2, 
+        ignore,
+        rename_preprocess_ref_area,
         rename_ctyname_to_iso3, 
-        rename_iso3_to_ctyname, 
-        tuple_cases_iso3
+        rename_iso3_to_ctyname
     )
-
+    
     return return_
 
 #%%========== data retriever ==========%%#
 
 def get(subdata, INDICATOR, FREQ):
-    
+
     import pandas as pd
     import country_converter as coco
     import numpy as np
     import pysfo.pulldata as pysfo_pull
-    
+
     # pysfo_pull.set_data_path("D:/Dropbox/80_data/raw")
     
     cc = coco.CountryConverter()
@@ -63,13 +61,37 @@ def get(subdata, INDICATOR, FREQ):
     df = _rename_dataset(df)
     df.columns = df.columns.str.lower()
     df.columns = df.columns.str.replace(" ", "_")
-    df = df.rename(columns = {"ref_area" : "cty_iso2"})
-    
+
+    # keep indicator
+
     keep = (
         (df["freq"].isin(FREQ))
         & (df["indicator"].isin(INDICATOR))
     )
     df = df.loc[keep, :]
+
+    #--- fix country names
+
+    (
+        ignore,
+        *_
+    ) = _fix_country_identifiers()
+
+    # ignore
+
+    for ig in ignore:
+
+        df = df[~(df["reference_area"].str.match(ig, case = False))]
+
+    # check ref_area: keep for future checks
+
+    if df[df["ref_area"].isna()]["reference_area"].nunique() > 0:
+        raise ValueError(f"There are missing REF_AREA in {INDICATOR}. Please check.")
+
+    # store master ref_area
+
+    df["master_ref_area"] = df["ref_area"]
+    df = df.rename(columns = {"ref_area" : "cty_iso2"})
 
     # for checks of data names
     # h_tmp = df.copy()
@@ -78,12 +100,13 @@ def get(subdata, INDICATOR, FREQ):
     # h_tmp[["series_name", "reference_area", "min_date", "max_date"]].sort_values(by = "reference_area").drop_duplicates().to_csv(f"{temp}/check.csv")
 
     if len(df) == 0:
-        raise ValueError(f"Series {INDICATOR} not found in {subdata}.")
+        raise ValueError(f"Series {INDICATOR} ({FREQ}) not found in {subdata}.")
 
     keepcols = [
         "period",
         "value",
         "freq",
+        "master_ref_area",
         "cty_iso2",
         "indicator",
         "reference_area",
@@ -98,24 +121,38 @@ def get(subdata, INDICATOR, FREQ):
         .str.replace(r"^0+", "", regex=True)
     )
 
-    df["cty_iso3"] = cc.pandas_convert(series = df["reference_area"], to = 'ISO3')  
+    # pre-rename checks: Leave this as future check
+    # df[df["reference_area"].str.match("yemen", case = False)]
+    # df[df["cty_name"].str.match("yemen", case = False)]
 
-    rename_ctyname_to_iso2, rename_ctyname_to_iso3, rename_iso3_to_ctyname, tuple_cases_iso3 = _fix_country_identifiers()
+    #--- rename country names and add iso ids
 
-    for old, new in tuple_cases_iso3.items():
-        mask = df["cty_iso3"].apply(lambda x: x == list(old))
-        df["cty_iso3"] = np.where(mask, new, df["cty_iso3"])
+    (
+        _,
+        rename_preprocess_ref_area, 
+        rename_ctyname_to_iso3, 
+        rename_iso3_to_ctyname
+    ) = _fix_country_identifiers()
+
+    df["cty_name"] = df["reference_area"]
+    
+    # direct renaming
+
+    for old, new in rename_preprocess_ref_area.items():
+        mask = df["cty_name"] == old
+        df["cty_name"] = np.where(mask, new, df["cty_name"])
+
+    df["cty_iso3"] = cc.pandas_convert(series = df["cty_name"], to = 'ISO3')  
 
     for old, new in rename_ctyname_to_iso3.items():
-        df["cty_iso3"] = np.where(df["reference_area"] == old, new, df["cty_iso3"])
-
-    for old, new in rename_ctyname_to_iso2.items():
-        df["cty_iso2"] = np.where(df["reference_area"] == old, new, df["cty_iso2"])
+        df["cty_iso3"] = np.where(df["cty_name"] == old, new, df["cty_iso3"])
 
     df["cty_name"] = cc.pandas_convert(series = df["cty_iso3"], src = 'ISO3', to = 'name_short')
 
     for old, new in rename_iso3_to_ctyname.items():
         df["cty_name"] = np.where(df["cty_iso3"] == old, new, df["cty_name"])
+
+    df["cty_name"] = np.where(df["cty_name"] == "not found", df["reference_area"], df["cty_name"])
 
     # Leave this as future check.
     # df[["reference_area", "cty_name", "cty_iso2", "cty_iso3"]].drop_duplicates().sort_values(by = ["reference_area"]).to_csv(f"{temp}/check.csv")
@@ -127,11 +164,19 @@ def get(subdata, INDICATOR, FREQ):
     # )
     # df.loc[mask, :]
 
+    # check duplicates: Leave this as future check
+    # (
+    #     df[df[["period", "cty_name"]].duplicated()]
+    #     .sort_values(by = ["cty_name", "period"])
+    #     .to_csv(f"{temp}/check.csv")
+    # )
+
     # keep final data
 
     keep_cols = [
         "indicator_label",
         "indicator",
+        "master_ref_area",
         "cty_iso3",
         "cty_iso2",
         "cty_name",
@@ -141,6 +186,10 @@ def get(subdata, INDICATOR, FREQ):
     ]
 
     df = df[keep_cols].sort_values(by = ["cty_iso3", "period"])
+    df.rename(columns = {"master_ref_area" : "ref_area"}, inplace = True)
+
+    if True in df[["period", "ref_area"]].duplicated().values:
+        raise ValueError(f"Duplicates found while cleaning {subdata}. Please check.")
 
     # set final formats
 

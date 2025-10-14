@@ -1,5 +1,18 @@
 #%%
 
+def flatten_list(lst):
+    """
+    Fastly flatten a list
+    """
+    
+    out = []
+    for x in lst:
+        if isinstance(x, list):
+            out.extend(flatten_list(x))
+        else:
+            out.append(x)
+    return out
+
 def statatab(data, na_report=False):
     """
     Equivalent to Stata's tabulate command with statistics.

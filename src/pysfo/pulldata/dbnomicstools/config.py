@@ -13,17 +13,15 @@ def _load_json(file_path):
         print(f"Error parsing JSON file: {file_path}")
         return None
 
-def _extract_filters_from_json(json_path):
+def _extract_filters_from_json(json_metadata_path):
 
     import pandas as pd
 
-    metadata = _load_json(json_path)
-
+    metadata = _load_json(json_metadata_path)["dataset"]
 
     dim_codes = metadata["dimensions_codes_order"]
-    dim_labels = metadata["dimensions_labels"]
     dim_values = metadata["dimensions_values_labels"]
-
+    
     df_list = []
 
     for dim in dim_codes:
@@ -31,7 +29,6 @@ def _extract_filters_from_json(json_path):
         elems = [
             [
                 dim, 
-                dim_labels[dim],
                 key,
                 val
             ] for key, val in dim_values[dim].items()
@@ -39,7 +36,7 @@ def _extract_filters_from_json(json_path):
 
         df = pd.DataFrame(
             data = elems,
-            columns = ["ID", "NAME", "VALUE", "DESCRIPTION_TEXT"]
+            columns = ["ID", "VALUE", "DESCRIPTION_TEXT"]
         )
 
         df_list.append(df)
