@@ -228,10 +228,22 @@ class dbDownload:
 
     def __init__(self):
 
+        # import pysfo.pulldata as pysfo_pulldata
+        # pysfo_pulldata.set_data_path("D:/Dropbox/80_Data/raw")
+
         from pysfo.pulldata import get_data_path
         
         self._base_dir = get_data_path() / "imf_bop"
         self._indicator_df = _decompose_indicator_df()
+
+    def get_indicator_decomposed(self, subdata):
+        
+        indicator_df = self._indicator_df
+        indicator_df = indicator_df[
+            indicator_df["DESCRIPTION_TEXT_1"] == subdata
+        ]
+
+        return indicator_df
 
     def main_series_documentation(self, store_docs = False):
         

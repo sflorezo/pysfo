@@ -1,0 +1,226 @@
+============================= test session starts =============================
+platform win32 -- Python 3.12.3, pytest-8.4.2, pluggy-1.6.0 -- D:\Dropbox\01_main\dev\packages\pysfo\.venv\Scripts\python.exe
+cachedir: .pytest_cache
+rootdir: D:\Dropbox\01_main\dev\packages\pysfo
+plugins: anyio-4.11.0
+collecting ... collected 6 items
+
+tests/pulldata/test_imf_ifs.py::test_imf_ifs_about 
+
+
+__________________________________________________
+TRY IMF IFS DOCUMENTATION
+
+
+About:
+------
+International Financial Statistics of the IMF.
+
+PASSED
+tests/pulldata/test_imf_ifs.py::test_imf_ifs_check_reporting 
+
+
+_____________________________
+TRY CHECK REPORTING OF SERIES
+
+
+Data Glimpse:
+--------------
+
+
+Reporting REF_AREA with GDP available in WB WDI. To see all possible 
+               REF_AREA, please set flag REF_AREA_all = True.
+
+    cty_iso3 ref_area ref_area_desc  GDP Last Reporting Year  \
+207      KIR       KI      Kiribati                   2023.0   
+208      PLW       PW         Palau                   2023.0   
+209      NRU       NR         Nauru                   2023.0   
+210      TUV       TV        Tuvalu                   2023.0   
+
+     Last GDP Reported (USD Billion)  Percentage of Periods Reported  1970  \
+207                             0.28                            0.26   0.0   
+208                             0.26                            0.00   0.0   
+209                             0.15                            0.00   0.0   
+210                             0.06                            0.00   0.0   
+
+     1980  1990  2000  2010  2020  
+207   0.0   0.0  0.25   7.0   5.0  
+208   0.0   0.0  0.00   0.0   0.0  
+209   0.0   0.0  0.00   0.0   0.0  
+210   0.0   0.0  0.00   0.0   0.0  
+PASSED
+tests/pulldata/test_imf_ifs.py::test_imf_ifs_dbDownload 
+
+
+__________________________________________________
+TRY IMF IFS DBNOMICS DONWLOAD
+
+
+Main Series Documentation:
+--------------------------
+
+#========== subdata: 'Monetary' ==========#
+
+Monetary Authorities/Central Bank
+Monetary Authorities
+
+Test fetch series:
+------------------
+
+
+Data for International_Investment_Positions already fetched. Please add flag force_fetch = True if you want new fetch and overwrite current file.
+
+
+Sub-Series Documentation:
+-------------------------
+
+#========== Assets ==========#
+
+(A, IADD_BP6_USD)             Direct investment, Debt instruments, US Dollars
+(Q, IADD_BP6_USD)             Direct investment, Debt instruments, US Dollars
+(A, IADE_BP
+
+Example code:
+-------------
+
+            #========== packages and paths ==========#
+
+            import pysfo.pulldata as pysfo_pull
+            from pysfo.basic.basicfns import *
+            import os
+
+            pysfo_pull.set_data_path("<RAW_DATA_PATH_ROOT>")
+            ifs_dbDownload = pysfo_pull.imfIFS.dbDownload()
+
+            #========== fetch data ==========#
+
+            # get main subdata documentation
+
+            _ = ifs_dbDownload.main_series_documentation(store_docs = True)
+
+            # fetch interest subdatasets, and get documentation. 
+            # . Possible subdata to choose from is shown in documentation (stored automatically previous line at <RAW>/imf_ifs.) 
+
+            fetch_subdata_list = [
+                "International Investment Positions",
+                "Exchange Rates",
+                "Financial",
+                "Financial Market Prices",
+                "Fiscal",
+                "Budgetary Central Government",
+                "Central Government (including Social Security)",
+                "Gross Domestic Product",
+                "Prices"
+            ]
+
+            for subdata in fetch_subdata_list:
+                
+                # fetch subdata
+                ifs_dbDownload.fetch_and_save_series_by_subdata(subdata, save_dir = os.path.dirname(__file__))
+
+                # generate documentation for each subdata (stored in <RAW>/imf_ifs)
+                _ = ifs_dbDownload.subseries_documentation(subdata, store_docs = True)
+
+            
+
+PASSED
+tests/pulldata/test_imf_ifs.py::test_imf_ifs_get 
+
+
+______________________
+TRY UPLOAD AFTER FETCH
+
+
+Data Glimpse:
+-------------
+
+                                          indicator_label          indicator  \
+282149  Exchange Rates, US Dollar per Domestic Currenc...  EDNE_USD_XDC_RATE   
+280504  Exchange Rates, US Dollar per Domestic Currenc...  EDNE_USD_XDC_RATE   
+281327  Exchange Rates, US Dollar per Domestic Currenc...  EDNE_USD_XDC_RATE   
+282150  Exchange Rates, US Dollar per Domestic Currenc...  EDNE_USD_XDC_RATE   
+
+       ref_area   cty_iso3 cty_iso2  \
+282149       7A  not found       7A   
+280504       5X  not found       5X   
+281327       5Y  not found       5Y   
+282150       7A  not found       7A   
+
+                                                cty_name freq     period  \
+282149  WAEMU (West African Economic and Monetary Union)    M 2025-06-01   
+280504                                             CEMAC    M 2025-07-01   
+281327                  Eastern Caribbean Currency Union    M 2025-07-01   
+282150  WAEMU (West African Economic and Monetary Union)    M 2025-07-01   
+
+           value  
+282149  0.001787  
+280504  0.001745  
+281327  0.370370  
+282150  0.001745  
+PASSED
+tests/pulldata/test_imf_ifs.py::test_imf_ifs_get_dbnomics_filters 
+
+
+______________________
+TRY PRINT INSTRUCTIONS
+
+
+Filters Glimpse:
+----------------
+         ID   VALUE       DESCRIPTION_TEXT
+0      FREQ       A                 Annual
+1      FREQ       B              Bi-annual
+2      FREQ       D                  Daily
+3      FREQ       M                Monthly
+4      FREQ       Q              Quarterly
+5      FREQ       W                 Weekly
+0  REF_AREA     119                     G7
+1  REF_AREA     120                    G20
+2  REF_AREA  1C_355  Curacao & St. Maarten
+3  REF_AREA  1C_459       Yemen, P.D. Rep.
+PASSED
+tests/pulldata/test_imf_ifs.py::test_imf_ifs_print_instructions 
+
+
+______________________
+TRY PRINT INSTRUCTIONS
+
+
+Instructions:
+-------------
+To use this dataset, you first need to download the data from dbnomics and
+save it to your local machine, in the following directory:
+
+D:\Dropbox\80_data\raw\imf_ifs
+
+To do this, follow these steps:
+
+Step 1:
+--------
+Retrieve the data from dbnomics and store it. Example code:
+
+    <ROOT_PACKAGE>.imfIFS.dbDownload().example_code()
+
+Step 2:
+--------
+After downloading, use the data via:
+
+    <ROOT_PACKAGE>.imfIFS.get(subdata, INDICATOR, FREQ)
+
+-> 'subdata' is defined in the documentation of the main series included in
+   the dataset. Example:
+
+    documentation = <ROOT_PACKAGE>.imfIFS.dbDownload().main_series_documentation()
+    print(documentation)
+
+-> To see available indicators and frequencies:
+
+    documentation2 = <ROOT_PACKAGE>.imfIFS.dbDownload().subseries_documentation(subdata)
+    print(documentation2)
+
+Note: You must complete Step 1 before requesting subdata documentation.
+
+
+PASSED
+
+============================== 6 passed in 5.14s ==============================

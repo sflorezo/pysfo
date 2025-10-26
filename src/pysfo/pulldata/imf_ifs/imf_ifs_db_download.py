@@ -224,6 +224,15 @@ class dbDownload:
         self._base_dir = get_data_path() / "imf_ifs"
         self._indicator_df = _decompose_indicator_df()
 
+    def get_indicator_decomposed(self, subdata):
+        
+        indicator_df = self._indicator_df
+        indicator_df = indicator_df[
+            indicator_df["DESCRIPTION_TEXT_1"] == subdata
+        ]
+
+        return indicator_df
+
     def main_series_documentation(self, store_docs = False):
         
         lines = []
