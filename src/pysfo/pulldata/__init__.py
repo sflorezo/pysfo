@@ -14,6 +14,7 @@ from .imf_bop import imfBOP
 from .wb_wdi import wbWDI
 from . import other 
 from .geo_globals import geo_globals
+from . import exceptions
 
 __all__ = [
     'dbnomicstools',
@@ -29,5 +30,6 @@ __all__ = [
     # 'imfWEO',
     'wbWDI',
     'other',
-    'geo_globals'
+    'geo_globals',
+    'exceptions'
 ]

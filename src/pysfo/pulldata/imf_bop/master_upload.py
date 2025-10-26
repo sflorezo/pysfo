@@ -43,7 +43,9 @@ def get(subdata, INDICATOR, FREQ, silent = False):
     import country_converter as coco
     import numpy as np
     import pysfo.pulldata as pysfo_pull
-    from pysfo.basic import silent_call
+    from pysfo.basic import silent_call, flatten_list
+    from pysfo.pulldata.exceptions import SeriesNotFoundError
+    import textwrap
 
     # pysfo_pull.set_data_path("D:/Dropbox/80_data/raw")
     # subdata = "Liabilities"
@@ -64,8 +66,17 @@ def get(subdata, INDICATOR, FREQ, silent = False):
     df.columns = df.columns.str.lower()
     df.columns = df.columns.str.replace(" ", "_")
 
-    # keep indicator
+    # raise error if required indicators not in dataset
 
+    not_found_list = [series for series in INDICATOR if series not in df["indicator"].unique()]
+    if len(not_found_list) > 0:
+        _error_msg = textwrap.dedent(f"""\
+        Series not found in subdata = '{subdata}' with FREQ = '{FREQ}'. Series not found are:
+        {"\n".join(not_found_list)}""")
+        raise SeriesNotFoundError(not_found_list = not_found_list, message = _error_msg)
+    
+    # keep indicator
+    
     keep = (
         (df["freq"].isin(FREQ))
         & (df["indicator"].isin(INDICATOR))
@@ -100,10 +111,7 @@ def get(subdata, INDICATOR, FREQ, silent = False):
     # h_tmp["min_date"] = df.groupby("reference_area")["period"].transform("min")
     # h_tmp["max_date"] = df.groupby("reference_area")["period"].transform("max")
     # h_tmp[["series_name", "reference_area", "min_date", "max_date"]].sort_values(by = "reference_area").drop_duplicates().to_csv(f"{temp}/check.csv")
-
-    if len(df) == 0:
-        raise ValueError(f"Series {INDICATOR} ({FREQ}) not found in {subdata}.")
-
+    
     keepcols = [
         "period",
         "value",

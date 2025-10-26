@@ -1,7 +1,6 @@
 
 import textwrap
 from .imf_ifs_db_download import dbDownload
-from .check_reporting import check_reporting
 from . import master_upload
 
 class imfIFS:
@@ -62,12 +61,66 @@ class imfIFS:
         pass
 
     @staticmethod
-    def get(subdata, INDICATOR, FREQ):
-        return master_upload.get(subdata, INDICATOR, FREQ)
+    def get(subdata, INDICATOR, FREQ, silent = False):
+        return master_upload.get(subdata, INDICATOR, FREQ, silent)
     
     @staticmethod
-    def check_reporting(subdata, INDICATOR, FREQ, report_percen = 1, start_date = None, end_date = None):
-        return check_reporting(subdata, INDICATOR, FREQ, report_percen, start_date, end_date)
+    def get_dbnomics_filters(filter = None):
+
+        import os
+        import re
+        from pysfo.pulldata.dbnomicstools import get_filters
+
+        current_dir = os.path.dirname(__file__)
+        file = [file for file in os.listdir(current_dir) if re.findall(".customization", file)][0]
+        json_metadata_path = os.path.join(current_dir, file)
+
+        df_filters = get_filters(json_metadata_path, filter)
+
+        return df_filters
+
+    @staticmethod
+    def check_reporting(
+        subdata, 
+        INDICATOR, 
+        FREQ, 
+        summarized = False, 
+        report_percen = 1, 
+        start_date = None, 
+        end_date = None, 
+        REF_AREA_all = False
+    ):
+
+        from pysfo.pulldata.dbnomicstools import dbTools
+
+        # provider = "IMF"
+        # dataset = "IFS"
+        # subdata = subdata
+        # series = INDICATOR
+        # freq = FREQ
+        # summarized = False 
+        # report_percen = 1 
+        # start_date = None 
+        # end_date = None
+        # REF_AREA_all = False
+
+        # import pysfo.pulldata as pysfo_pull
+        # pysfo_pull.set_data_path("D:/Dropbox/80_data/raw") 
+
+        report_tables = dbTools.check_reporting(
+            provider = "IMF",
+            dataset = "IFS",
+            subdata = subdata, 
+            series = INDICATOR, 
+            freq = FREQ, 
+            summarized = summarized, 
+            report_percen= report_percen, 
+            start_date= start_date, 
+            end_date = end_date, 
+            REF_AREA_all = REF_AREA_all
+        )
+
+        return report_tables
 
 __all__ = [
     "imfIFS"

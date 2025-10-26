@@ -1,7 +1,6 @@
 
 import textwrap
 from .imf_bop_db_download import dbDownload
-from .check_reporting import check_reporting
 from . import master_upload
 
 class imfBOP:
@@ -66,9 +65,51 @@ class imfBOP:
         return master_upload.get(subdata, INDICATOR, FREQ, silent)
     
     @staticmethod
-    def check_reporting(subdata, INDICATOR, FREQ, report_percen = 1, start_date = None, end_date = None):
-        return check_reporting(subdata, INDICATOR, FREQ, report_percen, start_date, end_date)
+    def check_reporting(
+        subdata, 
+        INDICATOR, 
+        FREQ, 
+        summarized = False, 
+        report_percen = 1, 
+        start_date = None, 
+        end_date = None, 
+        REF_AREA_all = False
+    ):
+
+        from pysfo.pulldata.dbnomicstools import dbTools
+
+        # subdata = "Assets"
+        # INDICATOR = ["IAPD_BP6_USD"]
+        # FREQ = "A"
+        # summarized = False
+        # report_percen = None
+        # start_date = None
+        # end_date = None
+        # REF_AREA_all = False
+
+        # import pysfo.pulldata as pysfo_pull
+        # pysfo_pull.set_data_path("D:/Dropbox/80_data/raw") 
+
+        #---- new reporter
+
+        report_tables = dbTools.check_reporting(
+            "IMF",
+            "BOP",
+            subdata, 
+            INDICATOR, 
+            FREQ, 
+            summarized, 
+            report_percen, 
+            start_date, 
+            end_date, 
+            REF_AREA_all
+        )
+
+        #---- old reporter
+        # check_reporter = checkReporting(subdata, INDICATOR, FREQ, summarized, report_percen, start_date, end_date, REF_AREA_all)
+
+        return report_tables
 
 __all__ = [
-    "imfIFS"
+    "imfBOP"
 ]
