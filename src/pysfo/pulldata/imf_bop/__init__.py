@@ -78,15 +78,17 @@ class imfBOP:
 
         from pysfo.pulldata.dbnomicstools import dbTools
 
-        # subdata = "Assets"
-        # INDICATOR = ["IAPD_BP6_USD"]
-        # FREQ = "A"
-        # summarized = False
-        # report_percen = None
-        # start_date = None
+        # provider = "IMF"
+        # dataset = "BOP"
+        # subdata=subdata
+        # INDICATOR=batch["VALUE"].unique()
+        # FREQ="A"
+        # summarized=True
+        # report_percen=1
+        # start_date="2010-01-01"
         # end_date = None
         # REF_AREA_all = False
-
+        
         # import pysfo.pulldata as pysfo_pull
         # pysfo_pull.set_data_path("D:/Dropbox/80_data/raw") 
 
