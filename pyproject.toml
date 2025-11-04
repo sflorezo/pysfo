@@ -4,6 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pysfo"
+dynamic = ["version"]
 description = "A Python package for data analysis and API interactions."
 authors = [{ name = "Sergio A. Florez-Orrego", email = "saf9215@stern.nyu.edu" }]
 license = "MIT"
