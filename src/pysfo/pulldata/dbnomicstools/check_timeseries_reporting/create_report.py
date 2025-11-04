@@ -126,11 +126,11 @@ class checkReporting:
             check = check[~(check.str.match(ig, case = False))]
 
         if len(check):
-
+            missing = "\n".join(check)
             _message = textwrap.dedent(f"""\
             Error constructing reporter_check for {self.series} ({self.freq}). Please check construction.
             Following countries still not matched:
-            {"\n".join(check)}
+            {missing}
             """)
 
             raise ValueError(_message)
