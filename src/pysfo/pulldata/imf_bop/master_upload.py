@@ -69,10 +69,11 @@ def get(subdata, INDICATOR, FREQ, silent = False):
     # raise error if required indicators not in dataset
 
     not_found_list = [series for series in INDICATOR if series not in df["indicator"].unique()]
+    not_found_list_ = "\n".join(not_found_list)
     if len(not_found_list) > 0:
         _error_msg = textwrap.dedent(f"""\
         Series not found in subdata = '{subdata}' with FREQ = '{FREQ}'. Series not found are:
-        {"\n".join(not_found_list)}""")
+       {not_found_list_}""")
         raise SeriesNotFoundError(not_found_list = not_found_list, message = _error_msg)
     
     # keep indicator
