@@ -6,10 +6,25 @@ build-backend = "setuptools.build_meta"
 name = "pysfo"
 dynamic = ["version"]
 description = "A Python package for data analysis and API interactions."
-authors = [{ name = "Sergio A. Florez-Orrego", email = "saf9215@stern.nyu.edu" }]
+authors = [
+    { name = "Sergio A. Florez-Orrego", email = "saf9215@stern.nyu.edu" },
+]
 license = "MIT"
 readme = "README.md"
 requires-python = ">=3.10"
+
+dependencies = [
+    "pandas",
+    "numpy",
+    "matplotlib",
+    "plotly",
+    "openai",
+    "fredapi",
+    "country_converter",
+    "joblib",
+    "python-dotenv",
+    "dbnomics",
+]
 
 [tool.setuptools.package-dir]
 "" = "src"
@@ -19,7 +34,7 @@ where = ["src"]
 exclude = ["experimental", "tests"]
 
 [tool.setuptools.dynamic]
-version = {attr = "pysfo.__version__"}
+version = { attr = "pysfo.__version__" }
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]
