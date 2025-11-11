@@ -16,19 +16,25 @@ def flatten_list(lst):
 def statatab(data, na_report=False):
     """
     Equivalent to Stata's tabulate command with statistics.
+    Adds a detailed missing-value breakdown if na_report=True.
 
-    Parameters:
-    - data: 1-dimensional array (list, vector, or Pandas Series)
-    - na_report: if True, include a row for missing values
-    
-    Returns:
-    - DataFrame with counts, percentage of observations, and cumulative percentage
+    Parameters
+    ----------
+    data : list, np.ndarray, or pd.Series
+        1D data vector.
+    na_report : bool, default=False
+        If True, include separate rows for None, np.nan, empty string (""), and other missings.
+
+    Returns
+    -------
+    pd.DataFrame
+        Table with value counts, percentages, and cumulative percentages.
     """
 
     import pandas as pd
     import numpy as np
 
-    # Convert input data to a Pandas Series for consistency
+    # Convert to Series for uniform handling
     if isinstance(data, (list, np.ndarray)):
         series = pd.Series(data)
     elif isinstance(data, pd.Series):
@@ -38,23 +44,45 @@ def statatab(data, na_report=False):
 
     total_count = len(series)
 
-    # Drop NA for main tabulation
+    # Main (non-missing) tabulation
     non_missing = series.dropna()
-    count_df = non_missing.value_counts().reset_index()
-    count_df.columns = ['Value', 'Count']
-    count_df['Percentage'] = (count_df['Count'] / total_count) * 100
-    count_df['Cumulative Percentage'] = count_df['Percentage'].cumsum()
+    non_missing = non_missing[non_missing != ""]  # exclude empty strings
+    count_df = non_missing.value_counts(dropna=False).reset_index()
+    count_df.columns = ["Value", "Count"]
+    count_df["Percentage"] = (count_df["Count"] / total_count) * 100
+    count_df["Cumulative Percentage"] = count_df["Percentage"].cumsum()
 
     if na_report:
-        missing_count = series.isna().sum()
-        if missing_count > 0:
-            missing_row = pd.DataFrame({
-                'Value': ['(Missing)'],
-                'Count': [missing_count],
-                'Percentage': [missing_count / total_count * 100],
-                'Cumulative Percentage': [count_df['Percentage'].sum() + (missing_count / total_count * 100)]
-            })
-            count_df = pd.concat([count_df, missing_row], ignore_index=True)
+        # Initialize missing breakdown
+        none_mask = series.map(lambda x: x is None)
+        nan_mask = series.map(lambda x: isinstance(x, float) and np.isnan(x))
+        empty_mask = series == ""
+        known_missing_mask = none_mask | nan_mask | empty_mask
+        other_missing_mask = series.isna() & ~known_missing_mask
+
+        missing_summary = []
+
+        def add_missing_row(label, mask):
+            count = mask.sum()
+            if count > 0:
+                missing_summary.append({
+                    "Value": label,
+                    "Count": count,
+                    "Percentage": count / total_count * 100
+                })
+
+        add_missing_row("(missing, None)", none_mask)
+        add_missing_row("(missing, np.nan)", nan_mask)
+        add_missing_row('(missing, "")', empty_mask)
+        add_missing_row("(missing, other missing)", other_missing_mask)
+
+        if missing_summary:
+            missing_df = pd.DataFrame(missing_summary)
+            # Compute cumulative percentages properly
+            missing_df["Cumulative Percentage"] = (
+                count_df["Percentage"].sum() + missing_df["Percentage"].cumsum()
+            )
+            count_df = pd.concat([count_df, missing_df], ignore_index=True)
 
     return count_df
 
