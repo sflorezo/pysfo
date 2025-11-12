@@ -1,0 +1,33 @@
+{
+  "metadata": {
+    "as_of_date": "2025-11-12",
+    "source": "Custom regional classification - Asia (excluding Oceania)"
+  },
+  "members": [
+    {"name": "China", "iso2": "CN", "iso3": "CHN", "region_entry_year": 1949},
+    {"name": "Japan", "iso2": "JP", "iso3": "JPN", "region_entry_year": 1952},
+    {"name": "India", "iso2": "IN", "iso3": "IND", "region_entry_year": 1947},
+    {"name": "South Korea", "iso2": "KR", "iso3": "KOR", "region_entry_year": 1948},
+    {"name": "Indonesia", "iso2": "ID", "iso3": "IDN", "region_entry_year": 1945},
+    {"name": "Thailand", "iso2": "TH", "iso3": "THA", "region_entry_year": 1932},
+    {"name": "Malaysia", "iso2": "MY", "iso3": "MYS", "region_entry_year": 1957},
+    {"name": "Singapore", "iso2": "SG", "iso3": "SGP", "region_entry_year": 1965},
+    {"name": "Philippines", "iso2": "PH", "iso3": "PHL", "region_entry_year": 1946},
+    {"name": "Vietnam", "iso2": "VN", "iso3": "VNM", "region_entry_year": 1945},
+    {"name": "Hong Kong", "iso2": "HK", "iso3": "HKG", "region_entry_year": 1997},
+    {"name": "Taiwan", "iso2": "TW", "iso3": "TWN", "region_entry_year": 1949},
+    {"name": "Pakistan", "iso2": "PK", "iso3": "PAK", "region_entry_year": 1947},
+    {"name": "Bangladesh", "iso2": "BD", "iso3": "BGD", "region_entry_year": 1971},
+    {"name": "Sri Lanka", "iso2": "LK", "iso3": "LKA", "region_entry_year": 1948},
+    {"name": "Nepal", "iso2": "NP", "iso3": "NPL", "region_entry_year": 1951},
+    {"name": "Cambodia", "iso2": "KH", "iso3": "KHM", "region_entry_year": 1953},
+    {"name": "Laos", "iso2": "LA", "iso3": "LAO", "region_entry_year": 1953},
+    {"name": "Myanmar", "iso2": "MM", "iso3": "MMR", "region_entry_year": 1948},
+    {"name": "Brunei", "iso2": "BN", "iso3": "BRN", "region_entry_year": 1984},
+    {"name": "Mongolia", "iso2": "MN", "iso3": "MNG", "region_entry_year": 1924},
+    {"name": "Timor-Leste", "iso2": "TL", "iso3": "TLS", "region_entry_year": 2002},
+    {"name": "Afghanistan", "iso2": "AF", "iso3": "AFG", "region_entry_year": 1919},
+    {"name": "Maldives", "iso2": "MV", "iso3": "MDV", "region_entry_year": 1965},
+    {"name": "Bhutan", "iso2": "BT", "iso3": "BTN", "region_entry_year": 1949}
+  ]
+}

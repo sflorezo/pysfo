@@ -1,0 +1,38 @@
+{
+  "metadata": {
+    "as_of_date": "2025-11-12",
+    "source": "Coppola-Maggiori-Neiman-Schreger (2021), Zucman (2013, 2015), OECD and IMF lists of low-tax jurisdictions"
+  },
+  "members": [
+    {"name": "Bermuda", "iso2": "BM", "iso3": "BMU", "designation_year": 1998},
+    {"name": "Cayman Islands", "iso2": "KY", "iso3": "CYM", "designation_year": 1998},
+    {"name": "British Virgin Islands", "iso2": "VG", "iso3": "VGB", "designation_year": 1998},
+    {"name": "Jersey", "iso2": "JE", "iso3": "JEY", "designation_year": 1998},
+    {"name": "Guernsey", "iso2": "GG", "iso3": "GGY", "designation_year": 1998},
+    {"name": "Isle of Man", "iso2": "IM", "iso3": "IMN", "designation_year": 1998},
+    {"name": "Hong Kong", "iso2": "HK", "iso3": "HKG", "designation_year": 1998},
+    {"name": "Singapore", "iso2": "SG", "iso3": "SGP", "designation_year": 1998},
+    {"name": "Luxembourg", "iso2": "LU", "iso3": "LUX", "designation_year": 1998},
+    {"name": "Ireland", "iso2": "IE", "iso3": "IRL", "designation_year": 2000},
+    {"name": "Netherlands", "iso2": "NL", "iso3": "NLD", "designation_year": 2000},
+    {"name": "Switzerland", "iso2": "CH", "iso3": "CHE", "designation_year": 2000},
+    {"name": "Panama", "iso2": "PA", "iso3": "PAN", "designation_year": 1998},
+    {"name": "Bahamas", "iso2": "BS", "iso3": "BHS", "designation_year": 1998},
+    {"name": "Barbados", "iso2": "BB", "iso3": "BRB", "designation_year": 1998},
+    {"name": "Malta", "iso2": "MT", "iso3": "MLT", "designation_year": 2004},
+    {"name": "Cyprus", "iso2": "CY", "iso3": "CYP", "designation_year": 2004},
+    {"name": "Mauritius", "iso2": "MU", "iso3": "MUS", "designation_year": 1998},
+    {"name": "Seychelles", "iso2": "SC", "iso3": "SYC", "designation_year": 1998},
+    {"name": "Liechtenstein", "iso2": "LI", "iso3": "LIE", "designation_year": 1998},
+    {"name": "Andorra", "iso2": "AD", "iso3": "AND", "designation_year": 1998},
+    {"name": "Monaco", "iso2": "MC", "iso3": "MCO", "designation_year": 1998},
+    {"name": "Gibraltar", "iso2": "GI", "iso3": "GIB", "designation_year": 1998},
+    {"name": "Aruba", "iso2": "AW", "iso3": "ABW", "designation_year": 1998},
+    {"name": "Curacao", "iso2": "CW", "iso3": "CUW", "designation_year": 2010},
+    {"name": "Sint Maarten", "iso2": "SX", "iso3": "SXM", "designation_year": 2010},
+    {"name": "Puerto Rico", "iso2": "PR", "iso3": "PRI", "designation_year": 1998},
+    {"name": "Labuan", "iso2": "MY", "iso3": "MYS", "designation_year": 1990},
+    {"name": "Delaware (United States)", "iso2": "US", "iso3": "USA", "designation_year": 1980},
+    {"name": "Dubai (United Arab Emirates)", "iso2": "AE", "iso3": "ARE", "designation_year": 2000}
+  ]
+}

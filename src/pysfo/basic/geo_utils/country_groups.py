@@ -23,7 +23,7 @@ def assign_country_category(
     src : str
         Identifier type. One of {'name', 'iso2', 'iso3'}.
     category : str
-        Category to evaluate (e.g., "EMU", "EU").
+        Category to evaluate (e.g., "EMU", "EU", "ASIA", "TAX_HAVENS").
     date_var : optional
         Datetime-like variable (datetime, pandas Timestamp, or Period series).
         If provided, membership is evaluated by adoption or accession date.
