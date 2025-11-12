@@ -13,7 +13,7 @@ from .imf_bop import imfBOP
 # from .imf_weo import imfWEO
 from .wb_wdi import wbWDI
 from . import other 
-from .geo_globals import geo_globals
+# from .geo_globals import geo_globals
 from . import exceptions
 
 __all__ = [
@@ -30,6 +30,6 @@ __all__ = [
     # 'imfWEO',
     'wbWDI',
     'other',
-    'geo_globals',
+    # 'geo_globals',
     'exceptions'
 ]
