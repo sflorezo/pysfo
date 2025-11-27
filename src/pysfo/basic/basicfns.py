@@ -124,48 +124,102 @@ def dupli_report(array, subset=None, list=False):
     
     return ret
 
-def na_report(data):
+def na_report(data, var=None, weight_col=None):
     """
-    Report missing values for each column in a DataFrame or for a 1-dimensional object.
+    Missing-value report (unweighted or weighted).
 
-    Parameters:
-    - data: Pandas Series, DataFrame, list, or numpy array
+    Behavior:
+    - Unweighted (weight_col=None): If data is Series → report that series.
+      If data is DataFrame → report all columns.
+    - Weighted (weight_col provided): User MUST also provide `var`.
+      Report only for `var`, using `weight_col` as weights.
 
-    Returns:
-    - DataFrame with multi-index (column, [Missing, Non-Missing]) and columns [Count, Percentage]
+    Parameters
+    ----------
+    data : pd.DataFrame or pd.Series
+    var : str or None
+        Column name to compute NA report for (required if weight_col is used).
+    weight_col : str or None
+        Name of numeric weight column.
+
+    Returns
+    -------
+    pd.DataFrame
     """
 
     import pandas as pd
     import numpy as np
 
-    def report_series(series):
-        missing_count = series.isnull().sum()
-        non_missing_count = series.notnull().sum()
-        total_count = len(series)
-        return pd.DataFrame({
-            'Count': [missing_count, non_missing_count],
-            'Percentage': [
-                (missing_count / total_count) * 100,
-                (non_missing_count / total_count) * 100
-            ]
-        }, index=['Missing', 'Non-Missing'])
-
+    # --- 1. handle list/ndarray ---
     if isinstance(data, (list, np.ndarray)):
         data = pd.Series(data)
 
-    if isinstance(data, pd.Series):
-        return report_series(data)
+    # --- 2. helper ---
+    def report_series(series, w=None):
+        if w is None:
+            missing = series.isnull().sum()
+            non_missing = series.notnull().sum()
+            total = missing + non_missing
+        else:
+            missing = w[series.isnull()].sum()
+            non_missing = w[series.notnull()].sum()
+            total = missing + non_missing
 
-    elif isinstance(data, pd.DataFrame):
-        reports = []
-        for col in data.columns:
-            col_report = report_series(data[col])
-            col_report.index = pd.MultiIndex.from_product([[col], col_report.index])
-            reports.append(col_report)
-        return pd.concat(reports)
+        pct_missing = (missing / total) * 100 if total > 0 else np.nan
+        pct_non_missing = (non_missing / total) * 100 if total > 0 else np.nan
 
-    else:
-        raise ValueError("Input data must be a list, numpy array, Pandas Series, or DataFrame")
+        return pd.DataFrame({
+            "Count": [missing, non_missing],
+            "Percentage": [pct_missing, pct_non_missing]
+        }, index=["Missing", "Non-Missing"])
+
+    # =======================================================================
+    # UNWEIGHTED MODE
+    # =======================================================================
+    if weight_col is None:
+
+        # Series → single report
+        if isinstance(data, pd.Series):
+            return report_series(data)
+
+        # DataFrame → all columns
+        if isinstance(data, pd.DataFrame):
+            out = []
+            for col in data.columns:
+                r = report_series(data[col])
+                r.index = pd.MultiIndex.from_product([[col], r.index])
+                out.append(r)
+            return pd.concat(out)
+
+        raise ValueError("Invalid data type.")
+
+    # =======================================================================
+    # WEIGHTED MODE (weight_col provided)
+    # =======================================================================
+
+    # Must be DataFrame
+    if not isinstance(data, pd.DataFrame):
+        raise ValueError("Weighted NA report requires DataFrame.")
+
+    # var is required
+    if var is None:
+        raise ValueError("When weight_col is provided, `var` must also be provided.")
+
+    # Check existence
+    if var not in data.columns:
+        raise ValueError(f"Variable `{var}` not found in DataFrame.")
+
+    if weight_col not in data.columns:
+        raise ValueError(f"weight_col `{weight_col}` not found in DataFrame.")
+
+    # Must be numeric
+    if not np.issubdtype(data[weight_col].dtype, np.number):
+        raise ValueError("weight_col must be numeric.")
+
+    # Weighted report only for `var`
+    r = report_series(data[var], data[weight_col])
+    r.index = pd.MultiIndex.from_product([[var], r.index])
+    return r
 
 
 def sumstats(df):
