@@ -44,7 +44,7 @@ def statatab(data, na_report=False):
 
     total_count = len(series)
 
-    # Main (non-missing) tabulation
+    # Main (non-missing) na
     non_missing = series.dropna()
     non_missing = non_missing[non_missing != ""]  # exclude empty strings
     count_df = non_missing.value_counts(dropna=False).reset_index()
