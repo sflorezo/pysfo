@@ -24,6 +24,8 @@ dependencies = [
     "joblib",
     "python-dotenv",
     "dbnomics",
+    "tomli",
+    "pyarrow",
 ]
 
 [tool.setuptools.package-dir]
