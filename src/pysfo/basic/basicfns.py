@@ -1,5 +1,48 @@
 #%%
 
+
+
+def save_pickle(obj, path) -> None:
+
+    """
+    Save a Python object to disk using pickle.
+
+    Parameters
+    ----------
+    obj : Any
+        Python object to serialize.
+    path : str | Path
+        Output path (should end with `.pkl`).
+    protocol : int, optional
+        Pickle protocol to use. Defaults to highest available.
+
+    Returns
+    -------
+    None
+    """
+
+    from pathlib import Path
+    import pickle
+
+    path = Path(path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+
+    with path.open("wb") as f:
+        pickle.dump(obj, f, protocol=pickle.HIGHEST_PROTOCOL)
+
+def load_pickle(path):
+    """
+    Load a Python object from a pickle file.
+    """
+    from pathlib import Path
+    import pickle
+    from typing import Any
+
+    path = Path(path)
+    with path.open("rb") as f:
+        return pickle.load(f)
+
+
 def flatten_list(lst):
     """
     Fastly flatten a list

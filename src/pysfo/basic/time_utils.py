@@ -1,6 +1,14 @@
 #%%
 
+def test_time(_fun, *args, **kwargs):
+    
+    import time
 
+    t0 = time.perf_counter()
+    out = _fun(*args, **kwargs)
+    t1 = time.perf_counter()
+    print(f"Elapsed time: {t1 - t0:.6f} seconds")
+    return out
 
 def print_elapsed_every(interval=60, stop_event=None):
 
