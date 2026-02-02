@@ -28,8 +28,14 @@ dependencies = [
     "pyarrow",
 ]
 
+# [tool.setuptools]
+# include-package-data = true
+
 [tool.setuptools.package-dir]
 "" = "src"
+
+# [tool.setuptools.package-data]
+# "pysfo.basic.geo_utils" = ["json_files/*.json"]
 
 [tool.setuptools.packages.find]
 where = ["src"]
