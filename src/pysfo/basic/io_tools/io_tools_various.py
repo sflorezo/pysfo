@@ -1,4 +1,10 @@
+# pyright: reportReturnType=false
+# pyright: reportPrivateImportUsage=false
 
+#%% 
+
+from pathlib import Path
+from typing import Union
 
 def silent_call(func, *args, verbose=True, **kwargs):
     """
@@ -77,3 +83,48 @@ def is_interactive_session() -> bool:
         return True
 
     return False
+
+def export_txt(
+    text: str,
+    path: Union[str, Path],
+    *,
+    newline: str = "\n",
+    encoding: str = "utf-8",
+    mkdir: bool = True,
+) -> Path:
+    """
+    Write text to a .txt / .tex file with a controlled format.
+
+    Parameters
+    ----------
+    text : str
+        Text content to write.
+    path : str or Path
+        Output file path.
+    newline : str, optional
+        Line ending to enforce (default: '\\n').
+    encoding : str, optional
+        File encoding (default: 'utf-8').
+    mkdir : bool, optional
+        Create parent directories if needed.
+
+    Returns
+    -------
+    Path
+        Path to the written file.
+    """
+    path = Path(path)
+    
+    if mkdir:
+        path.parent.mkdir(parents=True, exist_ok=True)
+
+    # Normalize line endings
+    text = text.replace("\r\n", "\n").replace("\r", "\n")
+    if newline != "\n":
+        text = text.replace("\n", newline)
+
+    path.write_text(text, encoding=encoding)
+    
+    _msg = "Saved to: " + str(path)
+    
+    return _msg
