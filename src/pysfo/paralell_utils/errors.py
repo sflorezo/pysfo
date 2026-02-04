@@ -1,0 +1,4 @@
+#%%
+
+class NestedParallelError(RuntimeError):
+    pass
