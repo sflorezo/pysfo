@@ -1,3 +1,6 @@
+# pyright: reportOptionalMemberAccess=false
+# pyright: reportAttributeAccessIssue=false
+
 #%%========== packages ==========%%#
 
 import pytest

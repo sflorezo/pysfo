@@ -1,3 +1,5 @@
+# pyright: reportOptionalSubscript=false
+
 def _load_json(file_path):
 
     import json

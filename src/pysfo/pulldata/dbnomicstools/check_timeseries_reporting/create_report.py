@@ -1,3 +1,5 @@
+# pyright: reportPossiblyUnboundVariable=false
+
 #%%========== Reporting Handler ==========%%#
 
 class checkReporting:

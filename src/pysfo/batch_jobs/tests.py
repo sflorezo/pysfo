@@ -1,3 +1,7 @@
+# pyright: reportCallIssue=false
+# pyright: reportUndefinedVariable=false
+# pyright: reportArgumentType=false
+
 #%%
 
 #---- auxiliary functions

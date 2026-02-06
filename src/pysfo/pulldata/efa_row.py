@@ -1,3 +1,7 @@
+# pyright: reportCallIssue=false
+# pyright: reportArgumentType=false
+# pyright: reportSelfClsParameterName=false
+
 #%%========== useful objects ==========%%#
 
 # Enhanced Financial Accounts Tables labels

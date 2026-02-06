@@ -1,3 +1,6 @@
+# pyright: reportOptionalMemberAccess=false
+# pyright: reportArgumentType=false
+
 #%%
 
 from setpaths import *
@@ -5,7 +8,6 @@ import pysfo.pulldata as pysfo_pull
 pysfo_pull.set_data_path("D:/Dropbox/80_data/raw")
 
 # %%
-
 
 reporting = pysfo_pull.imfIFS.check_reporting(
     subdata = "Exchange_Rates",
@@ -15,7 +17,6 @@ reporting = pysfo_pull.imfIFS.check_reporting(
     start_date = None,
     end_date = None
 )
-
 
 ## fast checks
 FROM_OTHER_DATA = None

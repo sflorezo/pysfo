@@ -1,3 +1,6 @@
+# pyright: reportArgumentType=false
+# pyright: reportGeneralTypeIssues=false
+
 #%%========== helper functions ==========%%#
 
 def _decompose_indicator_df():

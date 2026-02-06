@@ -1,6 +1,9 @@
+# pyright: reportArgumentType=false
+# pyright: reportGeneralTypeIssues=false
+# pyright: reportOptionalMemberAccess=false
+# pyright: reportPossiblyUnboundVariable=false
+
 #%%
-
-
 
 def save_pickle(obj, path) -> None:
 

@@ -1,3 +1,6 @@
+# pyright: reportArgumentType=false
+
+
 #%%
 
 def generate_code_from_df(df, prompt, big_size = False):

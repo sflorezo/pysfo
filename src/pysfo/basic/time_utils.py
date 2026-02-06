@@ -1,3 +1,5 @@
+# pyright: reportOptionalMemberAccess=false
+
 #%%
 
 def test_time(_fun, *args, **kwargs):

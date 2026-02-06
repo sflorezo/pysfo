@@ -1,3 +1,6 @@
+# pyright: reportGeneralTypeIssues=false
+
+
 #%%========== helper functions ==========%%#
 
 def _fetch_and_save_weo(save_dir, force_fetch = False):

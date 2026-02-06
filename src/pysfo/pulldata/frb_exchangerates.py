@@ -1,3 +1,5 @@
+# pyright: reportOptionalMemberAccess=false
+
 #%%========== define helper functions ==========%%#
 
 def parse_er_xml(file_path):

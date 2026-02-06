@@ -1,0 +1,7 @@
+name: pysfo
+channels:
+  - conda-forge
+dependencies:
+  - python=3.14
+  - ipykernel
+  - pip

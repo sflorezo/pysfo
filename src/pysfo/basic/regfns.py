@@ -1,3 +1,6 @@
+# pyright: reportArgumentType=false
+# pyright: reportInvalidStringEscapeSequence=false
+
 #%%
 
 def stars_from_pval(pval: float) -> str:

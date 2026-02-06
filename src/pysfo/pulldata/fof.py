@@ -1,3 +1,5 @@
+# pyright: reportAttributeAccessIssue=false
+
 #---- uploading FoF data
 
 # fof download dict
