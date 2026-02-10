@@ -15,7 +15,7 @@ def set_data_path(path: str | Path):
     Parameters
     ----------
     path : str | Path
-        Directory path where raw or processed data are stored.
+        Directory path where raw data is stored.
     """
     global _data_path
 
@@ -27,7 +27,7 @@ def set_data_path(path: str | Path):
     
 def get_data_path() -> Path:
     """
-    Return the global data directory set by the user.
+    Return the global raw data directory set by the user.
 
     Raises
     ------

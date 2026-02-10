@@ -1,5 +1,7 @@
 from ..config import *
 from .config import *
+from .bis_dss import bisDSS
+from .bis_ids import bisIDS
 from . import dbnomicstools
 from . import cmns 
 from .efa_row import EFARow 
@@ -17,6 +19,8 @@ from . import other
 from . import exceptions
 
 __all__ = [
+    'bisDSS',
+    'bisIDS',
     'dbnomicstools',
     'cmns',
     'EFARow',
