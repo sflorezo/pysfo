@@ -59,17 +59,6 @@ def _fetch_batch(batch_dimensions : dict) -> Dict[str, Any]:
         "not_fetched_error": not_fetched_error
     }
 
-def _get_available_ref_area():
-
-    """
-    Provides available values for fetching bisDSS by issuer residence (REF_AREA).
-    """
-
-    ref_area_df = get_filters(json_metadata_path, filter = "REF_AREA")
-
-    return ref_area_df
-
-
 def _fetch_and_save_bisDSS_by_ref_area(
         root_raw_bis_dss_path : Path,
         ref_area : str,
@@ -93,22 +82,32 @@ def _fetch_and_save_bisDSS_by_ref_area(
 
         raise ValueError("csv_save_dir must be a directory path. (where the raw data will be stored)")
 
-    elif csv_save_file.exists() and force_fetch == False:
+    if csv_save_file.exists():
+    
+        if force_fetch == False:
 
+            _msg = (
+                f"File already exists at {csv_save_file}.\n"
+                "Skipping file and continuing with other non-downloaded files (fix force_fetch = True to overwrite)."
+            )
+            print(_msg)
+            return
+        
+        else:
+
+            _msg = (
+                f"File already exists at {csv_save_file}.\n"
+                "Overwriting file (fix force_fetch = False to skip)."
+            )
+
+            print(_msg)
+
+    else:
+        
         _msg = (
-            f"[fetch_and_save_bisDSS_by_ref_area] File already exists at {csv_save_file}.\n"
-            "Please turn on force_fetch to overwrite"
+            f"File does not exist for REF_AREA = {ref_area}. Fetching data."
         )
         print(_msg)
-        return
-
-    elif force_fetch == False:
-        
-        _msg = "[fetch_and_save_bisDSS_by_ref_area] force_fetch = False. Please turn on flag to do full fetch"
-        print(_msg)
-        return
-    
-    print(f"Fetching BIS DSS for REF_AREA = {ref_area}...")
 
     #---- get BIS DSS available dimensions
 
@@ -215,12 +214,4 @@ class dbDownload:
         )
         
         return example_code
-
-    # CLEAN: This might not be needed given get_dbnomics_filters
-    # @staticmethod
-    # def get_available_ref_area():
-        
-    #     df = _get_available_ref_area()
-    #     return df
-
     

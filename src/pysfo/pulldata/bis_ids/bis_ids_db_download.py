@@ -82,21 +82,33 @@ def _fetch_and_save_bisIDS_by_issuer_res(
 
         raise ValueError("csv_save_dir must be a directory path. (where the raw data will be stored)")
 
-    elif csv_save_file.exists() and force_fetch == False:
+    if csv_save_file.exists():
+    
+        if force_fetch == False:
 
+            _msg = (
+                f"File already exists at {csv_save_file}.\n"
+                "Skipping file and continuing with other non-downloaded files (fix force_fetch = True to overwrite)."
+            )
+            print(_msg)
+            return
+        
+        else:
+
+            _msg = (
+                f"File already exists at {csv_save_file}.\n"
+                "Overwriting file (fix force_fetch = False to skip)."
+            )
+
+            print(_msg)
+
+    else:
+        
         _msg = (
-            f"[fetch_and_save_bisIDS_by_issuer_res] File already exists at {csv_save_file}.\n"
-            "Please turn on force_fetch to overwrite"
+            f"File does not exist for ISSUER_RES = {issuer_res}. Fetching data."
         )
         print(_msg)
-        return
-
-    elif force_fetch == False:
         
-        _msg = "[fetch_and_save_bisIDS_by_issuer_res] force_fetch = False. Please turn on flag to do full fetch"
-        print(_msg)
-        return
-    
     print(f"Fetching BIS IDS for ISSUER_RES = {issuer_res}...")
 
     #---- get BIS DSS available dimensions
@@ -204,12 +216,3 @@ class dbDownload:
         )
         
         return example_code
-
-    # CLEAN: This might not be needed given get_dbnomics_filters
-    # @staticmethod
-    # def get_available_issuer_res():
-        
-    #     df = _get_available_issuer_res()
-    #     return df
-
-    

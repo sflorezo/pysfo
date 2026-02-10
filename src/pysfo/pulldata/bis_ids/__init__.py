@@ -56,8 +56,8 @@ class bisIDS:
         pass
 
     @staticmethod
-    def get(REF_AREA, FREQ):
-        return master_upload.get(REF_AREA, FREQ)
+    def get(ISSUER_RES, FREQ):
+        return master_upload.get(ISSUER_RES = ISSUER_RES, FREQ = FREQ)
     
     @staticmethod
     def get_dbnomics_filters(filter = None):
