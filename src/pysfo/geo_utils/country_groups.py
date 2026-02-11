@@ -1,16 +1,51 @@
-# pyright: reportAttributeAccessIssue=false
+#%%
 
 import pandas as pd
 import json
 import os
 from pathlib import Path
 import country_converter as coco
-from typing import Any
+from typing import Any, cast
 import re
-from pysfo.basic import convert_date_format
+
+
+def get_available_categories():
+    """
+    Get currently implemented country categories in module
+    """
+
+    available_categories = [
+        "ASIA", "BRICS", "DM", "EME", "EMU", "TAX_HAVENS"
+    ]
+
+    return available_categories
+
+def get_country_list_in_category(
+    category : str
+) -> dict:
+    """
+    Get country list in a category
+
+    Parameters
+    ----------
+    category : str
+        Category to evaluate. See `get_available_categories` for options.
+
+    Returns
+    -------
+    dict
+        Dict wit all countries in a category.
+    """
+    
+    path_to_json = Path(os.path.dirname(__file__)) / "json_files" / f"{category}_members.json"
+    with open(path_to_json, "r") as f:
+        category_data = json.load(f)
+    
+    return category_data
+
 
 def assign_country_category(
-    countries: pd.Series,
+    countries: Any,
     src: str,
     category: str,
     date_var: Any = None
@@ -25,7 +60,7 @@ def assign_country_category(
     src : str
         Identifier type. One of {'name', 'iso2', 'iso3'}.
     category : str
-        Category to evaluate (e.g., "EMU", "EU", "ASIA", "TAX_HAVENS").
+        Category to evaluate. See `get_available_categories` for options.
     date_var : optional
         Datetime-like variable (datetime, pandas Timestamp, or Period series).
         If provided, membership is evaluated by adoption or accession date.
@@ -47,6 +82,12 @@ def assign_country_category(
     #     string_example = "2020q2"
     # )
     # ####
+
+    # convert countries in pd.Series
+
+    countries = pd.Series(countries)
+
+    # checks
 
     valid_src = {"name", "iso2", "iso3"}
     if src not in valid_src:
@@ -83,8 +124,12 @@ def assign_country_category(
     # --- Optional: date-based membership ---
     if date_var is not None:
         # Convert to Series and handle period types
-        if isinstance(date_var.dtype, pd.PeriodDtype):
-            date_series = pd.Series(date_var).dt.to_timestamp()
+        if isinstance(date_var, pd.Series) and isinstance(date_var.dtype, pd.PeriodDtype):
+            
+            date_series = date_var.astype("datetime64[ns]")
+
+            # CLEAN: Possibly clean this
+            # date_series = cast(pd.Series, date_var).dt.to_timestamp()
         else:
             date_series = pd.Series(pd.to_datetime(date_var, errors="coerce"))
 
@@ -113,3 +158,9 @@ def assign_country_category(
             result = ((~adoption_years.isna()) & (date_series.dt.year >= adoption_years)).astype(int)
 
     return result
+
+__all__ = [
+    "get_available_categories",
+    "get_country_list_in_category",
+    "assign_country_category",
+]
