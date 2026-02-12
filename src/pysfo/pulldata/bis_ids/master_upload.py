@@ -57,9 +57,13 @@ def get(ISSUER_RES, FREQ):
     # fix formats
 
     _numeric_vars = ["value"]
+    _date_vars = ["period"]
     
     for var in _numeric_vars:
         df[var] = pd.to_numeric(df[var], errors = "coerce")
+
+    for var in _date_vars:
+        df[var] = pd.to_datetime(df[var], errors = "coerce")
 
     df["value"] = df["value"] * 1e6 # documentation states raw data is in millions of dollars
 
