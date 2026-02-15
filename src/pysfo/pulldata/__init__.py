@@ -1,5 +1,6 @@
 from ..config import *
 from .config import *
+from .bis_derivatives import bisDerivatives
 from .bis_dss import bisDSS
 from .bis_ids import bisIDS
 from . import dbnomicstools
@@ -19,6 +20,7 @@ from . import other
 from . import exceptions
 
 __all__ = [
+    'bisDerivatives',
     'bisDSS',
     'bisIDS',
     'dbnomicstools',

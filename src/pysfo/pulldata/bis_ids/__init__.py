@@ -12,7 +12,7 @@ class bisIDS:
         To use this dataset, you first need to download the data from dbnomics and
         save it to your local machine, in the following directory:
 
-        <RAW>/bis_ids
+        <RAW>/{file_path}
 
         To do this, follow these steps:
 
