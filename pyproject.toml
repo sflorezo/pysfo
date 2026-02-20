@@ -27,6 +27,7 @@ dependencies = [
     "dbnomics",
     "tomli",
     "pyarrow",
+    "yfinance==1.2.0",
 ]
 
 # [tool.setuptools]

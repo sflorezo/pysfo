@@ -15,6 +15,7 @@ from .imf_ifs import imfIFS
 from .imf_bop import imfBOP
 # from .imf_weo import imfWEO
 from .wb_wdi import wbWDI
+from .yfinance_exchangerates import yfER
 from . import other 
 # from .geo_globals import geo_globals
 from . import exceptions
@@ -35,6 +36,7 @@ __all__ = [
     'imfBOP',
     # 'imfWEO',
     'wbWDI',
+    'yfER',
     'other',
     # 'geo_globals',
     'exceptions'
