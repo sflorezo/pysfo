@@ -28,14 +28,6 @@ class yfER:
         from ..config import get_data_path
 
         return yfER._INSTRUCTION_TEMPLATE
-
-    class yfDownload(yfDownload):
-        pass
-
-    @staticmethod
-    def get(ccy_group, **kwargs):
-        
-        return master_upload.get(ccy_group = ccy_group, **kwargs)
     
     @staticmethod
     def get_yfinance_documentation(filter = None):
@@ -66,6 +58,21 @@ class yfER:
             )
 
             raise ValueError(_msg)
+        
+    class yfDownload(yfDownload):
+        pass
+
+    @staticmethod
+    def get(ccy_group, **kwargs):
+        
+        return master_upload.get(ccy_group = ccy_group, **kwargs)
+        
+    __all__ = [
+        "about",
+        "print_instructions",
+        "get",
+        "get_yfinance_documentation",
+    ]
 
 
 __all__ = [

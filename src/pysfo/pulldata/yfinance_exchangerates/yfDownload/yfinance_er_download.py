@@ -64,8 +64,8 @@ def fetch_and_save_yfinance_er_by_ccy_group(
 ):
     
     from pysfo.pulldata.yfinance_exchangerates.yfDownload.exchangerates_params import yf_er_ccypair_fetch_root_name, available_ccy_pairs
-    from pysfo.pulldata.yfinance_exchangerates.yfDownload.utils import add_fetch_stamps_to_filename
-
+    from pysfo.pulldata.yfinance_exchangerates.utils import add_fetch_stamps_to_filename
+    
     ########
     # root_raw_yfinance_er_path = get_data_path() / "yfinance_exchangerates"
     # ccy_group = "DM_G10"
