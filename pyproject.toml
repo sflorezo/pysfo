@@ -24,7 +24,7 @@ dependencies = [
     "country_converter",
     "joblib",
     "python-dotenv",
-    "dbnomics",
+    "dbnomics==1.2.5",
     "tomli",
     "pyarrow",
     "yfinance==1.2.0",
