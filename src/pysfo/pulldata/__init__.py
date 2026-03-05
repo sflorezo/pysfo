@@ -14,6 +14,7 @@ from .fred import FREDcleaned
 from .imf_ifs import imfIFS
 from .imf_bop import imfBOP
 # from .imf_weo import imfWEO
+from . import interest_rates
 from .wb_wdi import wbWDI
 from .yfinance_exchangerates import yfER
 from . import other 
@@ -35,6 +36,7 @@ __all__ = [
     'imfIFS',
     'imfBOP',
     # 'imfWEO',
+    'interest_rates',
     'wbWDI',
     'yfER',
     'other',

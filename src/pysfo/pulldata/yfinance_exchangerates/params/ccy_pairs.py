@@ -1,12 +1,4 @@
-
-#%% ========== file names ========== %%#
-
-yf_er_ccypair_fetch_root_name = "yf_er_fetch_{fetch_stamps}_{ccy_group}"
-
-
-#%% ========== stuff used in package
-
-available_ccy_pairs = {
+ccy_groups = {
 
     # G10 liquid currency pairs
     "DM_G10" : [
@@ -27,11 +19,11 @@ available_ccy_pairs = {
         "USDMXN=X",
         "USDZAR=X",
         "USDTRY=X",
-        "USDPLN=X",
+        "USDPLN=X", 
         "USDHUF=X",
         "USDCZK=X",
         "USDCLP=X",
-        "USDCOP=X"
+        "USDCOP=X",
     ],
 
     # EM NDF (non-deliverable forward) currency pairs (capital controls)
@@ -55,6 +47,3 @@ available_ccy_pairs = {
     ]
 
 }
-
-
-# %%

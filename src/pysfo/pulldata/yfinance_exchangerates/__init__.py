@@ -9,34 +9,24 @@ class yfER:
 
     """Interface to yfinance ER data."""
 
-    _INSTRUCTION_TEMPLATE = textwrap.dedent("""\
+    @staticmethod
+    def list_available_ccy_groups():
 
-        To Write.
-                                            
-    """)
+        from .params.ccy_pairs import ccy_groups
+
+        return ccy_groups
 
     @staticmethod
-    def about():
-
-        return (
-            "YFinance ER data."
-        )
-
-    @staticmethod
-    def print_instructions():
-
-        from ..config import get_data_path
-
-        return yfER._INSTRUCTION_TEMPLATE
+    def get(ccy_group, **kwargs):
+        
+        return master_upload.get(ccy_group = ccy_group, **kwargs)
     
     @staticmethod
     def get_yfinance_documentation(filter = None):
 
-        from .yfDownload.exchangerates_params import available_ccy_pairs
         from .yfDownload.yfinance_documentation import PriceHistory_class_documentation
 
         yfinance_docs = {
-            "available_currency_pairs" : available_ccy_pairs,
             "PriceHistory_class_documentation" : PriceHistory_class_documentation,
         }
 
@@ -61,20 +51,7 @@ class yfER:
         
     class yfDownload(yfDownload):
         pass
-
-    @staticmethod
-    def get(ccy_group, **kwargs):
         
-        return master_upload.get(ccy_group = ccy_group, **kwargs)
-        
-    __all__ = [
-        "about",
-        "print_instructions",
-        "get",
-        "get_yfinance_documentation",
-    ]
-
-
 __all__ = [
     "yfER"
 ]

@@ -3,6 +3,10 @@
 # pyright: reportOptionalMemberAccess=false
 # pyright: reportPossiblyUnboundVariable=false
 
+from pathlib import Path
+from typing import Dict, Union, List
+import json
+
 #%%
 
 def save_pickle(obj, path) -> None:
@@ -418,6 +422,26 @@ def get_important_event_dates():
     }
     
     return all_dates
+
+
+def load_json(json_file: Union[Path, str]) -> Dict:
+    with open(json_file, 'r') as f:
+        data = json.load(f)
+    return data
+
+def save_json(json_data: Dict, json_file: Union[Path, str]) -> None:
+
+    with open(json_file, "w") as f:
+        json.dump(json_data, f, indent=4)
+
+
+
+def list_path_files(path: Union[Path, str]) -> List[Path]:
+
+    if isinstance(path, str):
+        path = Path(path)
+        
+    return [file for file in path.iterdir()]
 
 
 # %%

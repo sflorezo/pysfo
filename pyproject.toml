@@ -28,6 +28,8 @@ dependencies = [
     "tomli",
     "pyarrow",
     "yfinance==1.2.0",
+    "lseg-data==2.1.1",
+    "openpyxl==3.1.5",
 ]
 
 # [tool.setuptools]

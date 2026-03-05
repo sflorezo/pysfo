@@ -5,7 +5,7 @@ def get(ccy_group, **kwargs):
     import pandas as pd
     from pysfo.basic import load_parquet
     import pysfo.pulldata as pysfo_pull
-    from pysfo.pulldata.yfinance_exchangerates.yfDownload.exchangerates_params import yf_er_ccypair_fetch_root_name
+    from pysfo.pulldata.yfinance_exchangerates.yfDownload.download_params import yf_er_ccypair_fetch_root_name
     from pysfo.pulldata.yfinance_exchangerates.utils import add_fetch_stamps_to_filename
     
     # pysfo_pull.set_data_path("/storage/Dropbox/80_data/raw")
@@ -47,7 +47,3 @@ def get(ccy_group, **kwargs):
     # return
 
     return df
-
-__all__ = [
-    "get"
-]
