@@ -23,9 +23,10 @@ def build_configs(app_key : str, username : str, password : str, configs_path: P
             }
         }
     }
-
+    
     config_path = configs_path / "lseg-data.config.json"
 
     with config_path.open("w", encoding="utf-8") as f:
         json.dump(data_config, f, indent=4)
+
     
