@@ -4,6 +4,7 @@ from .bis_derivatives import bisDerivatives
 from .bis_dss import bisDSS
 from .bis_ids import bisIDS
 from . import dbnomicstools
+from .fx_forwards import fxForwards
 from . import cmns 
 from .efa_row import EFARow 
 from .frb_exchangerates import FRBExchangeRates
@@ -26,6 +27,7 @@ __all__ = [
     'bisDSS',
     'bisIDS',
     'dbnomicstools',
+    'fxForwards',
     'cmns',
     'EFARow',
     'FRBExchangeRates',

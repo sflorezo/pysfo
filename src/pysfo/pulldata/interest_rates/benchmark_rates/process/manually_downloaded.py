@@ -22,11 +22,11 @@ def clean_AUD(file_path_args):
     df = df.assign(
         group="DM_G10",
         ccy="AUD",
-        benchmark="AONIA"
-    )[["date", "group", "ccy", "benchmark", "rate"]]
+        benchmark="AONIA",
+        rate_type = "traded, unsecured",
+    )[["date", "group", "ccy", "benchmark", "rate_type", "rate"]]
 
     return df
-
 
 def clean_NZD(file_path_args):
 
@@ -54,8 +54,9 @@ def clean_NZD(file_path_args):
     df = df.assign(
         group="DM_G10",
         ccy="NZD",
-        benchmark="NZONIA"
-    )[["date", "group", "ccy", "benchmark", "rate"]]
+        benchmark="NZONIA",
+        rate_type="traded, unsecured",
+    )[["date", "group", "ccy", "benchmark", "rate_type", "rate"]]
 
     return df
 
@@ -74,8 +75,9 @@ def clean_NOK(file_path_args):
     df = df.assign(
         group="DM_G10",
         ccy="NOK",
-        benchmark="NOWA"
-    )[["date", "group", "ccy", "benchmark", "rate"]]
+        benchmark="NOWA",
+        rate_type="traded, unsecured",
+    )[["date", "group", "ccy", "benchmark", "rate_type", "rate"]]
 
     return df
 
@@ -95,7 +97,11 @@ def get_manually_downloaded_overnight_rfr(
         )
         for _, cty_dict in overnight_rfr.items()
         for _ccy_iso3, info in cty_dict.items()
-        if info["source"] == "manual" and info["obtained"] == True
+        if (
+            (info["source"] == "manual") 
+            and (info["obtained"] == True)
+            and (info["available"] == True)
+        )
     ]
 
     # consolidate

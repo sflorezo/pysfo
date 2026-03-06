@@ -1,3 +1,4 @@
+#%%
 
 from pathlib import Path
 from typing import Union
@@ -14,8 +15,8 @@ def H_process_overnight_rfr(
         ccy_iso3 : Union[str, list, None] = None
 ):
     
-    from .lseg_downloaded import get_lseg_overnight_rfr
-    from .manually_downloaded import get_manually_downloaded_overnight_rfr
+    from pysfo.pulldata.interest_rates.benchmark_rates.process.lseg_downloaded import get_lseg_overnight_rfr
+    from pysfo.pulldata.interest_rates.benchmark_rates.process.manually_downloaded import get_manually_downloaded_overnight_rfr
 
     # get data from different sources
 
@@ -41,6 +42,32 @@ def H_process_overnight_rfr(
             raise ValueError(f"ccy_iso3 not found in data{' for the selected cty_group' if cty_group else ''}: {invalid_ccys}")
         df_appended = df_appended[df_appended["ccy"].isin(ccy_iso3_list)]
 
+    # fix formats
+
+    _numeric_vars = ["rate"]
+    
+    for var in _numeric_vars:
+        df_appended[var] = pd.to_numeric(df_appended[var], errors = "coerce")
+
+    # fix units
+
+    in_percentages = [
+        {"ccy": "USD", "benchmark": "SOFR"},
+        {"ccy": "EUR", "benchmark": "ESTR"},
+        {"ccy": "GBP", "benchmark": "SONIA"},
+        {"ccy": "JPY", "benchmark": "TONAR"},
+        {"ccy": "CHF", "benchmark": "SARON"},
+        {"ccy": "CAD", "benchmark": "CORRA"},
+        {"ccy": "SEK", "benchmark": "SWESTR"},
+        {"ccy": "AUD", "benchmark": "AONIA"},
+        {"ccy": "NZD", "benchmark": "NZONIA"},
+        {"ccy": "NOK", "benchmark": "NOWA"},
+    ]
+
+    for correct in in_percentages:
+        mask = (df_appended["ccy"] == correct["ccy"]) & (df_appended["benchmark"] == correct["benchmark"])
+        df_appended.loc[mask, "rate"] = df_appended.loc[mask, "rate"] / 100
+    
     return df_appended
 
 __all__ = [

@@ -7,8 +7,15 @@ class SafeDict(dict):
         return "{" + key + "}"
 
 def add_fetch_stamps_to_filename(filename: str, **kwargs) -> str:
-    today = date.today().strftime("%Y-%m-%d")
-    fetch_stamps = f"downloaddate({today})"
+
+    downloaddate = kwargs.pop("downloaddate", None) 
+    
+    if downloaddate is None:
+        today = date.today().strftime("%Y-%m-%d")
+        fetch_stamps = f"downloaddate({today})"
+    else :
+        fetch_stamps = f"downloaddate({downloaddate})"
+
     for arg, val in kwargs.items():
         fetch_stamps += f"_{arg}({val})"
 

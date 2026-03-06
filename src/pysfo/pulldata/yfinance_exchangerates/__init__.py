@@ -17,9 +17,19 @@ class yfER:
         return ccy_groups
 
     @staticmethod
-    def get(ccy_group, **kwargs):
+    def get(
+        ccy_group, 
+        downloaddate,
+        period,
+        interval
+    ):
         
-        return master_upload.get(ccy_group = ccy_group, **kwargs)
+        return master_upload.H_get(
+            ccy_group = ccy_group, 
+            downloaddate = downloaddate,
+            period = period,
+            interval = interval
+        )
     
     @staticmethod
     def get_yfinance_documentation(filter = None):

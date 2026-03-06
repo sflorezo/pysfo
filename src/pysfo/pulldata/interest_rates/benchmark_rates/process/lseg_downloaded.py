@@ -5,6 +5,9 @@ from pathlib import Path
 import pandas as pd
 from typing import Union
 
+# from pysfo.basic import *
+# benchmark_rates_dir = Path("/storage/Dropbox/80_data/raw/benchmark_on_rates/")
+
 #%% ========== script settings ========== %%#
 
 lseg_benchmark_rate_file_name = "{cty_group}_{ccy_iso3}_{benchmark_name}.csv"
@@ -23,13 +26,15 @@ def get_lseg_overnight_rfr(
         df.assign(
             cty_group=cty_group,
             ccy_iso3=ccy_iso3,
-            name_simplified=info["name_simplified"]
+            name_simplified=info["name_simplified"],
+            rate_type = info["rate_type"]
         )
         for cty_group, cty_dict in overnight_rfr.items()
         for ccy_iso3, info in cty_dict.items()
         if (
             (info["source"] == "lseg_data")
             and (info["obtained"] == True)
+            and (info["available"] == True)
         )
         for df in [pd.read_csv(
             benchmark_rates_dir / lseg_benchmark_rate_file_name.format(
@@ -61,7 +66,7 @@ def get_lseg_overnight_rfr(
 
     # check all columns have the same information
 
-    required_cols = {'name_simplified', 'FIXING_1', 'ccy_iso3', 'cty_group', 'Date'}
+    required_cols = {'name_simplified', 'FIXING_1', 'ccy_iso3', 'cty_group', 'Date', "rate_type"}
 
     for i, df in enumerate(overnight_rfr_lseg):
         missing = required_cols - set(df.columns)
@@ -95,11 +100,11 @@ def get_lseg_overnight_rfr(
         "cty_group": "group",
         "name_simplified": "benchmark"
     })
-
+    
     df_combined["date"] = pd.to_datetime(df_combined["date"])
     df_combined["rate"] = pd.to_numeric(df_combined["rate"], errors="coerce")
 
-    df_combined = df_combined[["date", "group", "ccy", "benchmark", "rate"]]
+    df_combined = df_combined[["date", "group", "ccy", "benchmark", "rate_type", "rate"]]
 
     return df_combined
 
