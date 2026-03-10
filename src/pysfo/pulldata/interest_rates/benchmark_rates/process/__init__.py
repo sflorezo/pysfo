@@ -53,7 +53,9 @@ def H_process_overnight_rfr(
 
     in_percentages = [
         {"ccy": "USD", "benchmark": "SOFR"},
+        {"ccy": "USD", "benchmark": "LIBOR"},
         {"ccy": "EUR", "benchmark": "ESTR"},
+        {"ccy": "EUR", "benchmark": "EONIA"},
         {"ccy": "GBP", "benchmark": "SONIA"},
         {"ccy": "JPY", "benchmark": "TONAR"},
         {"ccy": "CHF", "benchmark": "SARON"},
@@ -63,7 +65,7 @@ def H_process_overnight_rfr(
         {"ccy": "NZD", "benchmark": "NZONIA"},
         {"ccy": "NOK", "benchmark": "NOWA"},
     ]
-
+    
     for correct in in_percentages:
         mask = (df_appended["ccy"] == correct["ccy"]) & (df_appended["benchmark"] == correct["benchmark"])
         df_appended.loc[mask, "rate"] = df_appended.loc[mask, "rate"] / 100

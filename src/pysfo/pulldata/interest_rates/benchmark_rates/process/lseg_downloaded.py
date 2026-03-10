@@ -26,21 +26,24 @@ def get_lseg_overnight_rfr(
         df.assign(
             cty_group=cty_group,
             ccy_iso3=ccy_iso3,
-            name_simplified=info["name_simplified"],
-            rate_type = info["rate_type"]
+            name_simplified=rfr_info["name_simplified"],
+            rate_type = rfr_info["rate_type"]
         )
         for cty_group, cty_dict in overnight_rfr.items()
-        for ccy_iso3, info in cty_dict.items()
+        for ccy_iso3, rfr_list in cty_dict.items()
+        for rfr_info in rfr_list
+
+        # for ccy_iso3, rfr_info in cty_dict.items()
         if (
-            (info["source"] == "lseg_data")
-            and (info["obtained"] == True)
-            and (info["available"] == True)
+            (rfr_info["source"] == "lseg_data")
+            and (rfr_info["obtained"] == True)
+            and (rfr_info["available"] == True)
         )
         for df in [pd.read_csv(
             benchmark_rates_dir / lseg_benchmark_rate_file_name.format(
                 cty_group=cty_group,
                 ccy_iso3=ccy_iso3,
-                benchmark_name=info["name_simplified"]
+                benchmark_name=rfr_info["name_simplified"]
             )
         )]
     ]
