@@ -18,7 +18,7 @@ from .imf_bop import imfBOP
 from . import interest_rates
 from .lseg_api import lsgeData
 from .wb_wdi import wbWDI
-from .yfinance_exchangerates import yfER
+from .exchangerates import ExchangeRates
 from . import other 
 # from .geo_globals import geo_globals
 from . import exceptions
@@ -42,7 +42,7 @@ __all__ = [
     'interest_rates',
     'lsgeData',
     'wbWDI',
-    'yfER',
+    'ExchangeRates',
     'other',
     # 'geo_globals',
     'exceptions'

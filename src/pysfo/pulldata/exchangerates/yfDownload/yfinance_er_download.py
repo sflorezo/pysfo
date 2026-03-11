@@ -63,9 +63,9 @@ def fetch_and_save_yfinance_er_by_ccy_group(
         **kwargs
 ):
     
-    from pysfo.pulldata.yfinance_exchangerates.params.ccy_pairs import ccy_groups
-    from pysfo.pulldata.yfinance_exchangerates.yfDownload.download_params import yf_er_ccypair_fetch_root_name
-    from pysfo.pulldata.yfinance_exchangerates.utils import add_fetch_stamps_to_filename
+    from pysfo.pulldata.exchangerates.params.ccy_pairs import ccy_pairs
+    from pysfo.pulldata.exchangerates.yfDownload.download_params import yf_er_ccypair_fetch_root_name
+    from pysfo.pulldata.exchangerates.utils import add_fetch_stamps_to_filename
     
     ########
     # root_raw_yfinance_er_path = get_data_path() / "yfinance_exchangerates"
@@ -124,7 +124,7 @@ def fetch_and_save_yfinance_er_by_ccy_group(
             batch_dimensions,
             **kwargs
         ) 
-        for batch_dimensions in ccy_groups[ccy_group]
+        for batch_dimensions in ccy_pairs[ccy_group]
     )
 
     results = cast(list, results)

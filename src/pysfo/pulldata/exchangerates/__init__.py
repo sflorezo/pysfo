@@ -3,32 +3,28 @@
 import textwrap
 from . yfDownload import yfDownload
 from . import master_upload
-from typing import cast
+from typing import cast, Union
 
-class yfER:
+class ExchangeRates:
 
-    """Interface to yfinance ER data."""
+    """Interface to ER data."""
 
     @staticmethod
     def list_available_ccy_groups():
 
-        from .params.ccy_pairs import ccy_groups
+        from .params.ccy_pairs import ccy_pairs
 
-        return ccy_groups
+        return ccy_pairs
 
     @staticmethod
     def get(
-        ccy_group, 
-        downloaddate,
-        period,
-        interval
+        interval : str,
+        ccy_group : Union[str, None] = None, 
     ):
         
         return master_upload.H_get(
+            interval = interval,
             ccy_group = ccy_group, 
-            downloaddate = downloaddate,
-            period = period,
-            interval = interval
         )
     
     @staticmethod
@@ -63,6 +59,6 @@ class yfER:
         pass
         
 __all__ = [
-    "yfER"
+    "ExchangeRates"
 ]
 # %%
