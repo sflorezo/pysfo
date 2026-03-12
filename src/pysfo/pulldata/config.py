@@ -28,7 +28,7 @@ def set_data_path(path: str | Path):
 def get_data_path() -> Path:
     """
     Return the global raw data directory set by the user.
-
+    
     Raises
     ------
     RuntimeError

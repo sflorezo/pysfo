@@ -1,7 +1,7 @@
 #%%
 
 from pathlib import Path
-from pysfo.pulldata.fx_forwards.params.fx_forwards_list import fx_forwards_prices
+from ..params.fx_forwards_list import fx_forwards_prices
 import pandas as pd
 
 # from pysfo.basic import *

@@ -1,4 +1,6 @@
-from ..config import *
+#%%
+
+from ..configs import *
 from .config import *
 from .bis_derivatives import bisDerivatives
 from .bis_dss import bisDSS
@@ -22,6 +24,19 @@ from .exchangerates import ExchangeRates
 from . import other 
 # from .geo_globals import geo_globals
 from . import exceptions
+
+#---- set_data path
+
+from pysfo.configs import CONFIGS
+
+DATA_RAW_PATH = (CONFIGS.get("PATHS") or {}).get("DATA_RAW_PATH")
+
+if DATA_RAW_PATH and DATA_RAW_PATH.exists():
+    set_data_path(DATA_RAW_PATH)
+else:
+    raise ValueError("DATA_RAW_PATH not found. Please set DATA_RAW_PATH in pysfo/configs/project_params.toml")
+
+#---- available packages
 
 __all__ = [
     'bisDerivatives',

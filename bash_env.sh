@@ -33,6 +33,7 @@ export LSEG_DATA_EMAIL="saf9215@stern.nyu.edu"
 
 export_envfile "$PROJECT_ROOT/.vscode/.env" \
     PROJECT_ROOT \
+    DATA_TEMP \
     LSEG_DATA_EMAIL \
     LSEG_DATA_API_KEY \
     LSEG_DATA_PASSWORD 

@@ -1,0 +1,5 @@
+# Project runtime configuration parameters.
+
+[paths]
+DATA_RAW_PATH = "$DATA_RAW"
+DATA_TEMP_PATH = "$DATA_TEMP/misc"
