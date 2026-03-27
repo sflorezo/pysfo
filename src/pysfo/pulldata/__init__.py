@@ -6,7 +6,7 @@ from .bis_derivatives import bisDerivatives
 from .bis_dss import bisDSS
 from .bis_ids import bisIDS
 from . import dbnomicstools
-from .fx_forwards import fxForwards
+from .fx_prices_and_derivatives import FXdata
 from . import cmns 
 from .efa_row import EFARow 
 from .frb_exchangerates import FRBExchangeRates
@@ -17,7 +17,7 @@ from .fred import FREDcleaned
 from .imf_ifs import imfIFS
 from .imf_bop import imfBOP
 # from .imf_weo import imfWEO
-from . import interest_rates
+from . import interestRates
 from .lseg_api import lsgeData
 from .wb_wdi import wbWDI
 from .exchangerates import ExchangeRates
@@ -43,7 +43,7 @@ __all__ = [
     'bisDSS',
     'bisIDS',
     'dbnomicstools',
-    'fxForwards',
+    'FXdata',
     'cmns',
     'EFARow',
     'FRBExchangeRates',
@@ -54,7 +54,7 @@ __all__ = [
     'imfIFS',
     'imfBOP',
     # 'imfWEO',
-    'interest_rates',
+    'interestRates',
     'lsgeData',
     'wbWDI',
     'ExchangeRates',

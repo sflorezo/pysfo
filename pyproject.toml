@@ -30,6 +30,8 @@ dependencies = [
     "yfinance==1.2.0",
     "lseg-data==2.1.1",
     "openpyxl==3.1.5",
+    # temporal to open R files
+    "rpy2",
 ]
 
 # [tool.setuptools]
